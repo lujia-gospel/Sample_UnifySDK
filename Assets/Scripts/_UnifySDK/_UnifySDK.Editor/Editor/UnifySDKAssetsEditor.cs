@@ -9,6 +9,7 @@ namespace UnifySDK.Editor{
 
     public class UnifySDKAssetsEditor : EditorWindow
     {
+        private const string ExternalRootPath = "./Tools/SdkFrame";
         [MenuItem("Tools/UnifySDK/资源配置")]
         static void ShowWindow()
         {
@@ -272,12 +273,12 @@ namespace UnifySDK.Editor{
                 return;
             }
             string sourcePath ,targetPath = "";
-            string externalRootPath = $"./Tools/SdkFrame/{setting.name}";
+            string externalPath = $"{ExternalRootPath}/{setting.name}";
            
             foreach (var info in setting.UnifySDKResPathInfos)
             {
-                sourcePath = isReverse? $"{Application.dataPath}/{info.assetFolder}" : $"{externalRootPath}/{info.assetFolder}";
-                targetPath = isReverse? $"{externalRootPath}/{info.assetFolder}" : $"{Application.dataPath}/{info.assetFolder}";
+                sourcePath = isReverse? $"{Application.dataPath}/{info.assetFolder}" : $"{externalPath}/{info.assetFolder}";
+                targetPath = isReverse? $"{externalPath}/{info.assetFolder}" : $"{Application.dataPath}/{info.assetFolder}";
                 DirectoryInfo sourceDireInfo = new DirectoryInfo(sourcePath);
                 DirectoryInfo destDire = new DirectoryInfo(targetPath);
                 CopyDireToDire(sourceDireInfo.FullName, destDire.FullName,isDelSource);
@@ -287,9 +288,9 @@ namespace UnifySDK.Editor{
 
         public static void DeleteExternalSDKAssets(UnifySDKAssetsSetting setting,bool clearConfigSetting=false)
         {
-            string externalRootPath = $"./Tools/SdkFrame/{setting.name}";
-            if (Directory.Exists(externalRootPath))
-                Directory.Delete(externalRootPath);
+            string externalPath = $"{ExternalRootPath}/{setting.name}";
+            if (Directory.Exists(externalPath))
+                Directory.Delete(externalPath);
             if (clearConfigSetting)
                 setting.UnifySDKResPathInfos.Clear();
         }

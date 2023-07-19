@@ -12,8 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 688155c9de764e8189e6c8427e768d3c, type: 3}
   m_Name: BuildArgumentsSettings
   m_EditorClassIdentifier: 
-  Keys:
-  - Crasheye
-  Values:
-  - Android_Default
-  AssetBundleMode: 1
+  Keys: []
+  Values: []
+  AssetBundleMode: 0

@@ -13,7 +13,7 @@ namespace UnifySDK
         internal static BuildArgumentsSettings s_RuntimeSettingsInstance = null;
 
         private static string m_SavePath = string.Empty;
-
+#if UNITY_EDITOR
         public static string SavePath {
             get
             {
@@ -22,6 +22,7 @@ namespace UnifySDK
                 return m_SavePath;
             }
         } 
+#endif
 
         [CustomHeader("拥有的SDK")]
         [SerializeField]
