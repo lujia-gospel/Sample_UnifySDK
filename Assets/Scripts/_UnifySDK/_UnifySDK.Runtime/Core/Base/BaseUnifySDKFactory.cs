@@ -1,6 +1,4 @@
-﻿using Unity.VisualScripting;
-
-namespace UnifySDK
+﻿namespace UnifySDK
 {
     public abstract class BaseUnifySDKFactory : IUnifySDKFactory
     {

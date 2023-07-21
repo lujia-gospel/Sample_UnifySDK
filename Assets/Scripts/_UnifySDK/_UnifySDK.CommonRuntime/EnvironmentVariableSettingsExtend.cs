@@ -1,13 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
 namespace UnifySDK
 {
-    public partial class BuildArgumentsSettings 
+    public partial class EnvironmentVariableSettings 
     {
         [CustomHeader("资源模式:Bundle","资源模式:Local本地")]
         public bool AssetBundleMode = false;
+        [CustomHeader("游戏模式","UI模板模式")]
+        public bool UITemplateMode = false;
     }
 }
 

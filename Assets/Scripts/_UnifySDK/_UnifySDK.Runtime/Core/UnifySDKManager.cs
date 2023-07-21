@@ -1,20 +1,42 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using UnityEngine;
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
 
 namespace UnifySDK
 {
-    public static class UnifySDKManager 
+    public partial class UnifySDKManager 
     {
-        private static List<IUnifySDK> AllUnifySDK;
-
-        private static bool _inited = false;
-
         
-        public static void OnCreate()
+        private static UnifySDKManager instance;
+
+        public static UnifySDKManager Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    instance = new UnifySDKManager();
+                }
+                return instance;
+            }
+        }
+        
+        private  List<IUnifySDK> AllUnifySDK;
+
+        private  bool _inited = false;
+        
+        public  readonly Dictionary<Type,List<object>> AllInterfaceUnifySDKs=new Dictionary<Type, List<object>>();
+        
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        static void OnBeforeSceneLoadRuntimeMethod ()
+        {
+            Debug.Log("   Start initializing all UnifySDKS ");
+            Instance.OnCreate();
+            Debug.Log("   All UnifySDKS were successfully initialized  ");
+        }
+        void OnCreate()
         {
             if (_inited)
             {
@@ -29,14 +51,55 @@ namespace UnifySDK
                 sdk.OnInit();
                 Debug.Log($"{sdk.GetType().Name  }  is successfully initialized   ");
             }
+
+            for (int i = 0; i < AllUnifySDK.Count; i++)
+            {
+                var initfaces = AllUnifySDK[i].GetType().GetInterfaces()
+                    .Where(interfaceType => interfaceType.IsDefined(typeof(UnifySDKInterfaceAttribute), false));
+                foreach (var initfaceType in initfaces)
+                {
+                    if (AllInterfaceUnifySDKs.ContainsKey(initfaceType))
+                        AllInterfaceUnifySDKs[initfaceType].Add(AllUnifySDK[i]);
+                    else
+                        AllInterfaceUnifySDKs.Add(initfaceType,new List<object>(){AllUnifySDK[i]});
+                }
+            }
+        }
+
+        /// <summary>
+        /// 获取含有 该[UnifySDKInterface]特性的接口的所有实例类 
+        /// </summary>
+        /// <param name="interFaceType"></param>
+        public List<object> GetUnifySDKList(Type interFaceType)
+        {
+            if (interFaceType == null)
+                Debug.LogError("GetUnifySDKList 参数 type==null ");
+            else if (!interFaceType.IsDefined(typeof(UnifySDKInterfaceAttribute), false))
+                Debug.LogError("该类型没有包含该特性");
+            else if (!AllInterfaceUnifySDKs.ContainsKey(interFaceType))
+                Debug.LogError($"没有该{interFaceType.Name}接口的SDK");
+            else
+                return AllInterfaceUnifySDKs[interFaceType];
+            return null;
         }
         
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-        static void OnBeforeSceneLoadRuntimeMethod ()
+        /// <summary>
+        /// 获取含有 该[UnifySDKInterface]特性的接口且继承Base 的所有实例类 
+        /// </summary>
+        /// <param name="interFaceType">UnifySDKInterfaceAttribute</param>
+        /// <param name="unifySDKType">UnifySDKInterfaceAttribute</param>
+        public object GetUnifySDK(Type interFaceType,Type unifySDKType)
         {
-            Debug.Log("   Start initializing all UnifySDKS ");
-            OnCreate();
-            Debug.Log("   All UnifySDKS were successfully initialized  ");
+            var list= GetUnifySDKList(interFaceType);
+            foreach (var sdk in list)
+            {
+                if (sdk.GetType()==unifySDKType)
+                {
+                    return sdk;
+                }
+            }
+            Debug.LogError($"该{unifySDKType.Name}类型的sdk 是空的");
+            return null;
         }
     }
 }

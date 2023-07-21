@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: _NoSDK
   m_EditorClassIdentifier: 
   m_UnifySDKAssetInfos:
-  - assetFolder: Plugins/Android
+  - assetFolder: Plugins

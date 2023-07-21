@@ -1,17 +1,9 @@
 namespace UnifySDK
 {
-    public enum UnifySDKType
-    {
-        Analytics,
-        Crash,
-    }
 
     public interface  IUnifySDK
     {
         int Priority { get ; }//根据优先级初始化
-        
-        UnifySDKType MyEnum {get;}
-        
         
         void OnInit();
         

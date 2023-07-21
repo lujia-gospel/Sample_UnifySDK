@@ -8,9 +8,9 @@ using UnityEditor;
 
 namespace UnifySDK
 {
-    public partial class BuildArgumentsSettings : ScriptableObject, ISerializationCallbackReceiver
+    public partial class EnvironmentVariableSettings : ScriptableObject, ISerializationCallbackReceiver
     {       
-        internal static BuildArgumentsSettings s_RuntimeSettingsInstance = null;
+        internal static EnvironmentVariableSettings s_RuntimeSettingsInstance = null;
 
         private static string m_SavePath = string.Empty;
 #if UNITY_EDITOR
@@ -18,7 +18,7 @@ namespace UnifySDK
             get
             {
                 if (string.IsNullOrEmpty(m_SavePath))
-                    Tools.GetScriptPath(typeof(BuildArgumentsSettings).Name,ref m_SavePath);
+                    Tools.GetScriptPath(typeof(EnvironmentVariableSettings).Name,ref m_SavePath);
                 return m_SavePath;
             }
         } 
@@ -35,7 +35,7 @@ namespace UnifySDK
         Dictionary<string, string> argumentsSDKSettings = new Dictionary<string, string>();
 
         /// <summary>The current settings instance.</summary>
-        public static BuildArgumentsSettings Instance
+        public static EnvironmentVariableSettings Instance
         {
             get
             {
@@ -51,23 +51,23 @@ namespace UnifySDK
             if (s_RuntimeSettingsInstance == null)
                 s_RuntimeSettingsInstance = GetBuildArgumentsSettings();
         }
-        static BuildArgumentsSettings GetBuildArgumentsSettings()
+        static EnvironmentVariableSettings GetBuildArgumentsSettings()
         {
-            BuildArgumentsSettings buildArgumentsSettings = null;
+            EnvironmentVariableSettings environmentVariableSettings = null;
 #if UNITY_EDITOR
-            string[] guids = AssetDatabase.FindAssets("t:" + typeof(BuildArgumentsSettings).Name);
+            string[] guids = AssetDatabase.FindAssets("t:" + typeof(EnvironmentVariableSettings).Name);
             if (guids.Length == 0)
             {
                 //将对象实例化  
-                BuildArgumentsSettings so = ScriptableObject.CreateInstance<BuildArgumentsSettings>();  
+                EnvironmentVariableSettings so = ScriptableObject.CreateInstance<EnvironmentVariableSettings>();  
         
                 if (so == null)  
                 {  
                     Debug.LogError("该对象无效，无法将对象实例化");  
-                    return buildArgumentsSettings;  
+                    return environmentVariableSettings;  
                 }
 
-                buildArgumentsSettings = so;
+                environmentVariableSettings = so;
                 //按指定路径生成配置文件  
                 AssetDatabase.CreateAsset(so,SavePath);
                 AssetDatabase.SaveAssets();
@@ -75,13 +75,13 @@ namespace UnifySDK
             else
             {
                 string path = AssetDatabase.GUIDToAssetPath(guids[0]);
-                buildArgumentsSettings = AssetDatabase.LoadAssetAtPath<BuildArgumentsSettings>(path);
+                environmentVariableSettings = AssetDatabase.LoadAssetAtPath<EnvironmentVariableSettings>(path);
             }
 #else
             // 将配置文件转化为对象
-            buildArgumentsSettings = Resources.Load<BuildArgumentsSettings>("BuildArgumentsSettings");
+            environmentVariableSettings = Resources.Load<EnvironmentVariableSettings>("EnvironmentVariableSettings");
 #endif
-            return buildArgumentsSettings;
+            return environmentVariableSettings;
         }
         
         public void SetSDKValue(string targetPlatform, string settings)
@@ -101,7 +101,7 @@ namespace UnifySDK
         {
             Keys.Clear();
             Values.Clear();
-
+            
             foreach (var kv in argumentsSDKSettings)
             {
                 Keys.Add(kv.Key);

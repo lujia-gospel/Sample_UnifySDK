@@ -206,16 +206,17 @@ namespace UnifySDK.Editor{
 
         private string[] OnDrawElementAcceptDrop(Rect rect, string label)
         {
-            if (rect.Contains(Event.current.mousePosition))
+         
+            if (rect.Contains(UnityEngine.Event.current.mousePosition))
             {
                 if (DragAndDrop.paths != null && DragAndDrop.paths.Length > 0 && !string.IsNullOrEmpty(DragAndDrop.paths[0]))
                 {
-                    if (Event.current.type == EventType.DragUpdated || Event.current.type == EventType.DragPerform)
+                    if (UnityEngine.Event.current.type == EventType.DragUpdated ||    UnityEngine.Event.current.type == EventType.DragPerform)
                     {
                         DragAndDrop.visualMode = DragAndDropVisualMode.Copy;
                     }
 
-                    if (Event.current.type == EventType.DragPerform)
+                    if (UnityEngine.Event.current.type == EventType.DragPerform)
                     {
                         DragAndDrop.AcceptDrag();
                         GUI.changed = true;

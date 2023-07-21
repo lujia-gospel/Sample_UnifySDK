@@ -1,4 +1,4 @@
-using Unity.VisualScripting;
+using UnifySDK.Event;
 
 namespace UnifySDK 
 {
@@ -16,9 +16,8 @@ namespace UnifySDK
         protected  BaseUnifySDK(T t)
         {
             Config = t;
+            UnifySDKEventSystem.Instance.UnifySDKInitEvent(this);
         }
-        
-        public UnifySDKType MyEnum {get;}
         public virtual void OnInit(){}
 
         /// <summary>
