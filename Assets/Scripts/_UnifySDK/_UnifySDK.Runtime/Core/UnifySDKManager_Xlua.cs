@@ -19,8 +19,10 @@ namespace UnifySDK
         /// </summary>
         /// <param name="defaultTable">默认table</param>
         /// <param name="luaLifeCycle"></param>
-        public  void InitLuaProxy(LuaTable defaultTable, LuaProxyLifeCycle luaLifeCycle)
+        public void InitLuaProxy(LuaTable defaultTable, LuaProxyLifeCycle luaLifeCycle)
         {
+            if (m_LuaLifeCycle == null)
+                m_LuaLifeCycle= new GameObject("UnifySDK_LuaProxyLifeCycle").AddComponent<LuaProxyLifeCycle>();
             m_LuaLifeCycle = luaLifeCycle;
             m_LuaLifeCycle.SetMetatable(defaultTable);
         }
@@ -74,7 +76,7 @@ namespace UnifySDK
         {
             LuaEventHandler luaEventHandler = new LuaEventHandler();
             aEvent.Handler += (eventData,eventArgs) => { luaEventHandler.SendValueChanged(eventData,eventArgs); };
-            Instance.m_LuaLifeCycle.Bind(table, fun, aEvent);
+            Instance.m_LuaLifeCycle.Bind(table, fun, luaEventHandler);
         }
         #endregion
     }
