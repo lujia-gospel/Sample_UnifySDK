@@ -1,4 +1,3 @@
-
 namespace UnifySDK
 {
     public partial class EnvironmentVariableSettings 

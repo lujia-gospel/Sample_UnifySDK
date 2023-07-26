@@ -9,12 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 688155c9de764e8189e6c8427e768d3c, type: 3}
-  m_Name: EnvironmentVariableSettings
+  m_Script: {fileID: 11500000, guid: 51ce5b995582b124ca3d32a1883eec3f, type: 3}
+  m_Name: DeviceOAID
   m_EditorClassIdentifier: 
-  AssetBundleMode: 0
-  UITemplateMode: 0
-  Keys:
-  - QuickSDK
-  Values:
-  - Android_Default
+  m_UnifySDKAssetInfos:
+  - assetFolder: Scripts/_UnifySDK/_UnifySDK.Extend/DeviceOAID
+  - assetFolder: Plugins/Android/libs/oaid_sdk_2.2.0.aar
+  - assetFolder: Plugins/Android/OAIDHelper.java

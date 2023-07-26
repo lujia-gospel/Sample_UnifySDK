@@ -60,7 +60,7 @@ namespace UnifySDK.Event
                 object obj = iEvents[i];
                 if (!(obj is AEvent<T> aEvent))
                 {
-                    Debug.LogError($"event error: {obj.GetType().Name}");
+                    UDebug.Sys.LogError($"event error: {obj.GetType().Name}");
                     continue;
                 }
                 aEvent.Handle(a);

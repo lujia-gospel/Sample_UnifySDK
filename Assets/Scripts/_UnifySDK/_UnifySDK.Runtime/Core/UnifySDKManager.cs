@@ -22,34 +22,44 @@ namespace UnifySDK
                 return instance;
             }
         }
-        
-        private  List<IUnifySDK> AllUnifySDK;
 
-        private  bool _inited = false;
+        public IUnifySDK IUnifySDK;
         
-        public  readonly Dictionary<Type,List<object>> AllInterfaceUnifySDKs=new Dictionary<Type, List<object>>();
+        public IUnifySDK_Account IUnifySDK_Account;
+        
+        public IUnifySDK_Purchase IUnifySDK_Purchase;
+        
+        public IUnifySDK_Crash IUnifySDK_Crash;
+        
+        public IUnifySDK_Device IUnifySDK_Device;
+        
+        private List<IUnifySDK> AllUnifySDK;
+
+        private bool _inited = false;
+        
+        public readonly Dictionary<Type,List<object>> AllInterfaceUnifySDKs=new Dictionary<Type, List<object>>();
         
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         static void OnBeforeSceneLoadRuntimeMethod ()
         {
-            Debug.Log("   Start initializing all UnifySDKS ");
+            UDebug.Sys.Log("   Start initializing all UnifySDKS ");
             Instance.OnCreate();
-            Debug.Log("   All UnifySDKS were successfully initialized  ");
+            UDebug.Sys.Log("   All UnifySDKS were successfully initialized  ");
         }
         void OnCreate()
         {
             if (_inited)
             {
-                Debug.Log("   UnifySDKManager  has been initialized ");
-                return;   
+                UDebug.Sys.Log("   UnifySDKManager  has been initialized ");
+                return;
             }
             _inited = true;
             AllUnifySDK = Factory.Create();
             foreach (var sdk in AllUnifySDK)
             { 
-                Debug.Log($"{sdk.GetType().Name  }  starts to initialize ");
+                UDebug.Sys.Log($"{sdk.GetType().Name  }  starts to initialize ");
                 sdk.OnInit();
-                Debug.Log($"{sdk.GetType().Name  }  is successfully initialized   ");
+                UDebug.Sys.Log($"{sdk.GetType().Name  }  is successfully initialized   ");
             }
 
             for (int i = 0; i < AllUnifySDK.Count; i++)
@@ -62,8 +72,18 @@ namespace UnifySDK
                         AllInterfaceUnifySDKs[initfaceType].Add(AllUnifySDK[i]);
                     else
                         AllInterfaceUnifySDKs.Add(initfaceType,new List<object>(){AllUnifySDK[i]});
+                    InitInterFace(AllUnifySDK[i]);
                 }
             }
+        }
+
+        private void InitInterFace(IUnifySDK unifySDK)
+        {
+            IUnifySDK = IUnifySDK ?? unifySDK;
+            IUnifySDK_Account = IUnifySDK_Account ?? unifySDK as IUnifySDK_Account ;
+            IUnifySDK_Purchase = IUnifySDK_Purchase ?? unifySDK as IUnifySDK_Purchase;
+            IUnifySDK_Crash = IUnifySDK_Crash ?? unifySDK as IUnifySDK_Crash;
+            IUnifySDK_Device = IUnifySDK_Device ?? unifySDK as IUnifySDK_Device;
         }
 
         /// <summary>
@@ -73,11 +93,11 @@ namespace UnifySDK
         public List<object> GetUnifySDKList(Type interFaceType)
         {
             if (interFaceType == null)
-                Debug.LogError("GetUnifySDKList 参数 type==null ");
+                UDebug.Sys.LogError("GetUnifySDKList 参数 type==null ");
             else if (!interFaceType.IsDefined(typeof(UnifySDKInterfaceAttribute), false))
-                Debug.LogError("该类型没有包含该特性");
+                UDebug.Sys.LogError("interFaceType 不包含 UnifySDKInterface 特性");
             else if (!AllInterfaceUnifySDKs.ContainsKey(interFaceType))
-                Debug.LogError($"没有该{interFaceType.Name}接口的SDK");
+                UDebug.Sys.LogError($"没有该{interFaceType.Name}接口的SDK");
             else
                 return AllInterfaceUnifySDKs[interFaceType];
             return null;
@@ -87,18 +107,18 @@ namespace UnifySDK
         /// 获取含有 该[UnifySDKInterface]特性的接口且继承Base 的所有实例类 
         /// </summary>
         /// <param name="interFaceType">UnifySDKInterfaceAttribute</param>
-        /// <param name="unifySDKType">UnifySDKInterfaceAttribute</param>
-        public object GetUnifySDK(Type interFaceType,Type unifySDKType)
+        /// <param name="unifySDKName">SDKName</param>
+        public object GetUnifySDK(Type interFaceType,string unifySDKName)
         {
             var list= GetUnifySDKList(interFaceType);
             foreach (var sdk in list)
             {
-                if (sdk.GetType()==unifySDKType)
+                if ( (sdk as IUnifySDK).SDKName == unifySDKName)
                 {
                     return sdk;
                 }
             }
-            Debug.LogError($"该{unifySDKType.Name}类型的sdk 是空的");
+            UDebug.Sys.LogError($"该{unifySDKName}类型的sdk 是空的");
             return null;
         }
     }

@@ -6,9 +6,11 @@ namespace UnifySDK
 {
     public class UnifySDKConfigSettings : ScriptableObject, ISerializationCallbackReceiver
     {
+        [CustomHeader("配置表名称")]
         [SerializeField]
         List<string> Keys = new List<string>();
 
+        [CustomHeader("配置表具体的资源")]
         [SerializeField]
         List<BaseUnifySDKConfig> Values = new List<BaseUnifySDKConfig>();
         Dictionary<string, BaseUnifySDKConfig> Settings = new Dictionary<string, BaseUnifySDKConfig>();

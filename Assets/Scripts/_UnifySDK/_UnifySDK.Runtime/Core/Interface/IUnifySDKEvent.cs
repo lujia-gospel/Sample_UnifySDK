@@ -10,7 +10,12 @@ namespace UnifySDK.Event
     public class AEvent<T> : IEvent where T : struct
     {
         public event EventHandler Handler;
-        
+
+        public void ClearEventHandler()
+        {
+            Handler = null;
+        }
+
         public Type GetEventType()
         {
             return typeof (T);
@@ -29,7 +34,7 @@ namespace UnifySDK.Event
             }
             catch (Exception e)
             {
-                Debug.LogError(e);
+                UDebug.Sys.LogError(e);
             }
         }
     }

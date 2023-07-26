@@ -5,7 +5,7 @@ using UnityEngine;
 using System.IO;
 using System.Text;
 
-namespace UnifySDK.Editor{
+namespace UnifySDK.Editor {
 
     public class UnifySDKAssetsEditor : EditorWindow
     {
@@ -249,7 +249,7 @@ namespace UnifySDK.Editor{
         
                 if (so == null)  
                 {  
-                    Debug.LogError("该对象无效，无法将对象实例化");  
+                    UDebug.Sys.LogError("该对象无效，无法将对象实例化");  
                     return false;  
                 } 
             
@@ -270,7 +270,7 @@ namespace UnifySDK.Editor{
         { 
             if (setting == null)
             {
-                Debug.LogError("UnifySDKAssetsSetting 配置文件为空 ");
+                UDebug.Sys.LogError("UnifySDKAssetsSetting 配置文件为空 ");
                 return;
             }
             string sourcePath ,targetPath = "";

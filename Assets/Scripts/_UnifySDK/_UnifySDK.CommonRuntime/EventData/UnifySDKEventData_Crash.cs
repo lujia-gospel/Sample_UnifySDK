@@ -1,7 +1,4 @@
-namespace UnifySDK
+namespace UnifySDK.Event
 {
-    public partial class UnifySDKEvent
-    {
-        
-    }
+    
 }

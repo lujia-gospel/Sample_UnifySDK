@@ -75,10 +75,5 @@ namespace UnifySDK.Editor
                 createAssetMethod.Invoke(null, null);
             }
         }
-        
-        public static void CreateConfigSetting()
-        {
-            
-        }
     }
 }

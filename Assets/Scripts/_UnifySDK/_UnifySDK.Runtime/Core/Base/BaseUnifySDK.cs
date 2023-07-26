@@ -1,24 +1,32 @@
+using Tutorial;
 using UnifySDK.Event;
 
 namespace UnifySDK 
 {
     public abstract class BaseUnifySDK<T> : IUnifySDK where T : BaseUnifySDKConfig  
     {
-        private const int m_DefaultPriority=100;
-        //根据优先级初始化
+        protected virtual int GetPriority()
+        {
+            return 0;
+        }
+
+        //默认SDK根据优先级来获取  初始化也是根据优先级来
         public int Priority
         {
-            get => m_DefaultPriority;
+            get => GetPriority();
         }
+        public string SDKName { get;set; }
 
         protected T Config;
         
-        protected  BaseUnifySDK(T t)
+        protected BaseUnifySDK(T t,string sdkName)
         {
+            SDKName = sdkName;
             Config = t;
             UnifySDKEventSystem.Instance.UnifySDKInitEvent(this);
         }
-        public virtual void OnInit(){}
+
+        public abstract void OnInit();
 
         /// <summary>
         /// 设置App版本号
@@ -37,7 +45,32 @@ namespace UnifySDK
         /// </summary>
         /// <param name="channelID">渠道号</param>
         public virtual void SetChannelID(string channelID){}
+
+        /// <summary>
+        /// 获取渠道号
+        /// </summary>
+        public virtual string GetChannelID()
+        {
+            return "null";
+        }
         
+        /// <summary>
+        /// 获取渠道名
+        /// </summary>
+        public virtual string GetChannelName()
+        {
+            return "null";
+        }
+
+
+        /// <summary>
+        /// 获取设备ID
+        /// </summary>
+        public virtual string GetDeviceId()
+        {
+            return "该SDK没有实现GetDeviceId方法";
+        }
+
         public virtual void OnDestroy(){}
         
     }

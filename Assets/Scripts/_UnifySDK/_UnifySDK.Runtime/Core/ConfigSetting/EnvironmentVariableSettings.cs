@@ -24,12 +24,12 @@ namespace UnifySDK
         } 
 #endif
 
-        [CustomHeader("拥有的SDK")]
-        [SerializeField]
+      
+
+        [HideInInspector] [SerializeField]
         public List<string> Keys = new List<string>();
 
-        [CustomHeader("对应的配置表")]
-        [SerializeField]
+        [HideInInspector] [SerializeField]
         public  List<string> Values = new List<string>();
 
         Dictionary<string, string> argumentsSDKSettings = new Dictionary<string, string>();
@@ -63,7 +63,7 @@ namespace UnifySDK
         
                 if (so == null)  
                 {  
-                    Debug.LogError("该对象无效，无法将对象实例化");  
+                    UDebug.Sys.LogError("该对象无效，无法将对象实例化");  
                     return environmentVariableSettings;  
                 }
 
@@ -83,16 +83,29 @@ namespace UnifySDK
 #endif
             return environmentVariableSettings;
         }
-        
+
+        public void DeleteSDKValue(int index)
+        {
+            Keys.RemoveAt(index);
+            Values.RemoveAt(index);
+            OnAfterDeserialize();
+        }
+
         public void SetSDKValue(string targetPlatform, string settings)
         {
             argumentsSDKSettings[targetPlatform] = settings;
+            Keys.Add(targetPlatform);
+            Values.Add(settings);
         }
         
         public string GetSDKValue(string targetPlatform)
         {
             string ret = null;
             argumentsSDKSettings.TryGetValue(targetPlatform, out ret);
+            #if !UNITY_EDITOR
+            if (string.IsNullOrEmpty(ret))
+                UDebug.Logic.LogError($"包里不应该有 {targetPlatform}");
+            #endif
             return ret;
         }
         

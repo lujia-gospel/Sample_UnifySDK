@@ -1,8 +1,9 @@
-﻿//#define XLUA
+﻿#define XLUA
 #if XLUA
 using System.Reflection;
 using LuaProxy;
 using UnifySDK.Event;
+using UnityEditor;
 using UnityEngine;
 using XLua;
 namespace UnifySDK
@@ -10,9 +11,9 @@ namespace UnifySDK
     public partial class UnifySDKManager
     {
         #region Lua绑定Hander  
-        private  LuaProxyLifeCycle m_LuaLifeCycle;
+        private LuaProxyLifeCycle m_LuaLifeCycle;
     
-        public  LuaProxyLifeCycle LuaLifeCycle => m_LuaLifeCycle;
+        public LuaProxyLifeCycle LuaLifeCycle => m_LuaLifeCycle;
     
         /// <summary>
         /// 初始LuaProxy
@@ -39,14 +40,14 @@ namespace UnifySDK
             IEvent iEvent = aEvent as IEvent;
             if (iEvent==null)
             {
-                Debug.LogError($"error aEvent is not IEvent");
+                UDebug.Sys.LogError($"error aEvent is not IEvent");
                 return;
             }
             LuaTable table = m_LuaLifeCycle.GetMetatable();
             MethodInfo genericMethodBind = typeof(UnifySDKManager).GetMethod("GenericMethodBind").MakeGenericMethod( iEvent.GetEventType() );
             genericMethodBind.Invoke(null,new []{table,fun,aEvent} );
         }
-        
+
         /// <summary>
         /// 绑定aEvent
         /// </summary>
@@ -59,7 +60,7 @@ namespace UnifySDK
             IEvent iEvent = aEvent as IEvent;
             if (iEvent==null)
             {
-                Debug.LogError($"error aEvent is not IEvent");
+                UDebug.Sys.LogError($"error aEvent is not IEvent");
                 return;
             }
             MethodInfo genericMethodBind = typeof(UnifySDKManager).GetMethod("GenericMethodBind").MakeGenericMethod(iEvent.GetEventType());
@@ -72,7 +73,7 @@ namespace UnifySDK
         /// <param name="table">LuaTabel</param>
         /// <param name="fun">LuaFunction</param>
         /// <param name="aEvent"></param>
-        public static void GenericMethodBind<T>(LuaTable table, LuaFunction fun, AEvent<T>  aEvent)where T:struct
+        public static void GenericMethodBind<T>(LuaTable table, LuaFunction fun, AEvent<T> aEvent)where T:struct
         {
             LuaEventHandler luaEventHandler = new LuaEventHandler();
             aEvent.Handler += (eventData,eventArgs) => { luaEventHandler.SendValueChanged(eventData,eventArgs); };

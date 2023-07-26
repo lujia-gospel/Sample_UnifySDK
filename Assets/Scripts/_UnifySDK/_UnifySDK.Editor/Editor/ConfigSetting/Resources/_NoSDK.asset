@@ -14,3 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_UnifySDKAssetInfos:
   - assetFolder: Plugins
+  - assetFolder: Plugins/Android/OAIDHelper.java
+  - assetFolder: Scripts/_UnifySDK/_UnifySDK.Extend/DeviceOAID

@@ -44,11 +44,11 @@ namespace UnifySDK{
             {
                 string[] paths = AssetDatabase.FindAssets($"t:script {scriptName}", new[] {"Assets"});
                 if(paths.Length>1)
-                    Debug.LogError($"有同名脚本文件 {scriptName} 获取路径失败");
+                    UDebug.Sys.LogError($"有同名脚本文件 {scriptName} 获取路径失败");
                 else if (paths.Length > 0)
                     result = AssetDatabase.GUIDToAssetPath(paths[0]).Replace($"{scriptName}.cs","Resources");
                 else
-                    Debug.LogError($" {scriptName}.cs 没有该脚本");
+                    UDebug.Sys.LogError($" {scriptName}.cs 没有该脚本");
             }
         }
 #endif
