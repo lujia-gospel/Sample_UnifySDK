@@ -58,12 +58,14 @@ namespace UnifySDK.Editor
                     var v= GUILayout.TextField(settings.Values[i]);
                     if (v!=settings.Values[i])
                     {
-                        settings.SetSDKValue(settings.Keys[i],v); 
+                        settings.SetSDKValue(settings.Keys[i],v);
+                        EditorUtility.SetDirty(target);
                     }
                     if (GUILayout.Button("DeleteSDK", GUILayout.MinWidth(60.0f), GUILayout.MaxWidth(100.0f)))
                     {
                         settings.DeleteSDKValue(i);
                         UpdateCanAddEventNameArr();
+                        EditorUtility.SetDirty(target);
                     }
                     GUILayout.EndHorizontal();
                 } 
@@ -96,10 +98,12 @@ namespace UnifySDK.Editor
                         settings.SetSDKValue(canAddEventNameArr[selectIndex],sdkConfigName);
                         selectIndex = selectIndex>0? selectIndex--: selectIndex;
                         sdkConfigName = "";
+                        EditorUtility.SetDirty(target);
                     }
                 }
             }
             GUILayout.EndVertical();
+            AssetDatabase.SaveAssetIfDirty(target);
         }
     }
 }

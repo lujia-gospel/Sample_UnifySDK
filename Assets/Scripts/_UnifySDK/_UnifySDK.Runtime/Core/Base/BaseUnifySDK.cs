@@ -5,16 +5,11 @@ namespace UnifySDK
 {
     public abstract class BaseUnifySDK<T> : IUnifySDK where T : BaseUnifySDKConfig  
     {
-        protected virtual int GetPriority()
-        {
-            return 0;
-        }
-
         //默认SDK根据优先级来获取  初始化也是根据优先级来
-        public int Priority
-        {
-            get => GetPriority();
-        }
+        public virtual int Priority { get=>0; }
+        
+        public virtual bool AutoInit  { get=>true; }
+        
         public string SDKName { get;set; }
 
         protected T Config;

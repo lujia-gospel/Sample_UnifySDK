@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace UnifySDK
@@ -56,10 +55,13 @@ namespace UnifySDK
             _inited = true;
             AllUnifySDK = Factory.Create();
             foreach (var sdk in AllUnifySDK)
-            { 
-                UDebug.Sys.Log($"{sdk.GetType().Name  }  starts to initialize ");
-                sdk.OnInit();
-                UDebug.Sys.Log($"{sdk.GetType().Name  }  is successfully initialized   ");
+            {
+                if (sdk.AutoInit)
+                {
+                    UDebug.Sys.Log($"AutoInit {sdk.GetType().Name  }  starts to initialize ");
+                    sdk.OnInit();
+                    UDebug.Sys.Log($"AutoInit {sdk.GetType().Name  }  is successfully initialized   ");
+                }
             }
 
             for (int i = 0; i < AllUnifySDK.Count; i++)

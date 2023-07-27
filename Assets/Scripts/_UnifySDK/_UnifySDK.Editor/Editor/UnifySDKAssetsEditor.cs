@@ -4,6 +4,7 @@ using UnityEditorInternal;
 using UnityEngine;
 using System.IO;
 using System.Text;
+using UnityEditor.Build.Reporting;
 
 namespace UnifySDK.Editor {
 
@@ -294,6 +295,36 @@ namespace UnifySDK.Editor {
                 Directory.Delete(externalPath);
             if (clearConfigSetting)
                 setting.UnifySDKResPathInfos.Clear();
+        }
+
+        [MenuItem("Tools/Unify/TestBuildApk")]
+        public static void TestBuildApk()
+        {
+            BuildBeforeSetSDK();
+            var apkPath = "./APK/TestBuildApk.apk";
+            BuildReport buildReport = BuildPipeline.BuildPlayer(EditorBuildSettings.scenes, apkPath,
+                BuildTarget.Android,
+                BuildOptions.CompressWithLz4HC);
+            AssetDatabase.Refresh();
+        }
+
+        public static void BuildBeforeSetSDK()
+        {
+            try
+            {
+                BuildBeforeClearSDKAssets();
+                
+                for (int i = 0; i < Math.Min(EnvironmentVariableSettings.Instance.Keys.Count, EnvironmentVariableSettings.Instance.Values.Count); i++)
+                {
+                    var assetsSetting =   UnifySDKAssetsSetting.GetUnifySDKAssetsSetting(EnvironmentVariableSettings.Instance.Keys[i]);
+                    MoveToProject(assetsSetting);
+                }
+            }
+            catch (Exception e)
+            {
+                UDebug.Sys.LogError(e);
+                throw;
+            }
         }
 
         public static void BuildBeforeClearSDKAssets()

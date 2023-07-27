@@ -58,21 +58,6 @@ namespace UnifySDK
                UnityEngine.Debug.Log(text);  //Unity引擎使用
             }
         }
-
-        // public void LogError(string message)
-        // {
-        //     if (this.DebugOut)
-        //     {
-        //         string text = string.Format("{0} |{1}|<color=red>{2}|   {3}</color>",
-        //             new object[]{
-        //                 DateTime.Now.ToShortTimeString(),
-        //                 "ERROR",
-        //                 this.module,
-        //                 message
-        //             }); 
-        //         UnityEngine.UDebug.LogError(text);  //Unity引擎使用
-        //     }
-        // }
         public void LogError(object message)
         {
             if (this.DebugOut)

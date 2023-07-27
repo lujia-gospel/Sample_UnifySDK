@@ -6,7 +6,9 @@ namespace UnifySDK
         int Priority { get ; }//根据优先级初始化
 
         string SDKName{ get ; set; }
-        
+
+        bool AutoInit { get; }
+
         void OnInit();
         
         /// <summary>
