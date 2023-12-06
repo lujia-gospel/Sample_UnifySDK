@@ -1,0 +1,6 @@
+framework module UltraAnalyticsSDK {
+  umbrella header "UltraAnalyticsSDK.h"
+
+  export *
+  module * { export * }
+}

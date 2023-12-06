@@ -1,0 +1,31 @@
+{
+
+  "version": "2.2.1",
+  "unity": "2019.4",
+  "unityRelease": "28f1c1",
+  "scopedRegistries": [
+    {
+      "name": "ultra",
+      "url": "https://source.sdksrv.com/verdaccio/",
+      "scopes": [
+        "com.ultrasdk.unity.native"
+      ]
+    }
+  ],
+  "dependencies": {
+  },
+  "name": "com.ultrasdk.unity.native",
+  "displayName": "UltraSDK-Native",
+  "description": "UltraSDK Native",
+  "author": {
+    "name": "sdksrv",
+    "email": "",
+    "url": "http://docs.ultrasdk.com/usdk/usdk/produce.html"
+  },
+  "keywords": [
+    "UltraSDK-Native",
+    "UltraSDK",
+    "Unity",
+    "SDK"
+  ]
+}

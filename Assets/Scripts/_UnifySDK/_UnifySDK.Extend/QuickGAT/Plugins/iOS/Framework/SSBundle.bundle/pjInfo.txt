@@ -1,0 +1,3 @@
+channelID=default,
+channelDesc=官网渠道,
+desc=注意英文等号与逗号作为分割符,

@@ -1,0 +1,30 @@
+
+// 韩语，注意不要随便加入回车，每个文件行数都是对应的，最后的分号和冒号之间不能有空格，方便脚本导入导出
+
+
+
+/*
+ *  所有模块
+ */
+"main_login_fail" = "로그인 확인 실패";
+"main_network_fail" = "네트워크가 작동하지 않습니다. 네트워크 상태를 확인하고 다시 시도하십시오.";
+"main_login_account" = "로그인 계정을 입력하세요";
+"main_login_password" = "로그인 비밀번호를 입력하세요";
+"main_no_portrait" = "세로 모드를 지원하지 않음";
+"main_login_fail2" = "로그인 실패, 네트워크를 확인하십시오.";
+"main_active_code" = "활성화 코드를 입력하세요";
+"main_active_code_fail" = "활성화 코드 오류, 다시 입력하십시오";
+"main_login_problem" = "문제 피드백 실패: 문제 옵션을 선택하십시오";
+"main_login_problem_submit" = "로그인 문제 제출됨";
+"main_report_info" = "역할 보고 실패: 불완전한 기본 매개변수";
+"main_pay_gameprop" = "주문 실패, 오류: 3130001";
+"main_pay_order" = "주문 실패, 오류: 3130002";
+"main_pay_fail" = "주문 실패, 오류: 3130003";
+"main_pay_iap_forbid" = "주문 실패: 시스템에서 인앱 구매를 금지합니다. 권한을 확인하십시오.";
+"main_pay_dispose" = "주문 실패: 주문을 처리하는 중입니다. 잠시만 기다려 주십시오.";
+"main_pay_goodsid_fail" = "주문 실패: 아이템 ID 획득 실패";
+"main_pay_order_fail" = "주문 실패: 주문 번호 획득 실패";
+"main_no_scan_login" = "카메라가 감지되지 않음";
+"main_login_fail3" = "로그인 실패";
+"main_login_fail4" = "로그인 실패, USDK가 초기화되지 않았습니다.";
+"main_upload_fail" = "업로드 실패: 나중에 다시 시도하십시오";

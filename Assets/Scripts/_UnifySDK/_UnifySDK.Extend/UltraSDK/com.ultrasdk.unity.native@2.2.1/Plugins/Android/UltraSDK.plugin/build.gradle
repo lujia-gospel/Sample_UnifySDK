@@ -1,0 +1,33 @@
+apply plugin: 'android-library'
+
+dependencies {
+
+    implementation('androidx.legacy:legacy-support-v4:1.0.0')
+    implementation('androidx.multidex:multidex:2.0.1')
+    
+    api files('libs/UltraSDK.aar')
+    api files('libs/ultrasdksupport.jar')
+    
+}
+
+android {
+    sourceSets {
+        main {
+            manifest.srcFile 'AndroidManifest.xml'
+            //java.srcDirs = ['src']
+            res.srcDirs = ['res']
+            assets.srcDirs = ['assets']
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+
+    compileSdkVersion 29
+    defaultConfig {
+        targetSdkVersion 19
+        multiDexEnabled true
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+}

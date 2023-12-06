@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-8257767624818632325
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 546b14ec1b9049cdb1bbaac47a4c0461, type: 3}
+  m_Name: IOS_Default Setting
+  m_EditorClassIdentifier: 
+  Appkey: khedffbk
+  ChannelId: Unique
+  EnableCSharpStackTrace: 0
+--- !u!114 &-2736816825099671350
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 546b14ec1b9049cdb1bbaac47a4c0461, type: 3}
+  m_Name: Android_Default Setting
+  m_EditorClassIdentifier: 
+  Appkey: so8nwyrb
+  ChannelId: Unique
+  EnableCSharpStackTrace: 0
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41d4b8d92e5046078ab47ed9c37012d3, type: 3}
+  m_Name: Crasheye_UnifySDKConfig Settings
+  m_EditorClassIdentifier: 
+  Keys:
+  - Android_Default
+  - IOS_Default
+  Values:
+  - {fileID: -2736816825099671350}
+  - {fileID: -8257767624818632325}

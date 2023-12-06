@@ -1,0 +1,6 @@
+framework module UltraBaseSDK {
+  umbrella header "UltraBaseSDK.h"
+
+  export *
+  module * { export * }
+}

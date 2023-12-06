@@ -1,0 +1,20 @@
+fileFormatVersion: 2
+guid: 3eba60e6d0c2642959c9ddbc3c335e63
+folderAsset: yes
+DefaultImporter:
+  externalObjects: {}
+platformData:
+  - first:
+      iPhone: iOS
+    second:
+      enabled: 1
+      settings: {}
+  - first:
+      Editor: Editor
+    second:
+      enabled: 0
+      settings:
+        DefaultValueInitialized: true
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

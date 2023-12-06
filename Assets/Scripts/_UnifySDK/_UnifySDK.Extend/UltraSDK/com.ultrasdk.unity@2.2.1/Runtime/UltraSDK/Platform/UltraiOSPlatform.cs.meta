@@ -1,0 +1,15 @@
+﻿fileFormatVersion: 2
+guid: 9d7edf5440de4c35846e8f910b493aeb
+timeCreated: 1635844254
+platformData:
+  - first:
+      iPhone: iOS
+    second:
+      enabled: 1
+      settings: {}
+  - first:
+      Editor: Editor
+    second:
+      enabled: 0
+      settings:
+        DefaultValueInitialized: true

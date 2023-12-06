@@ -1,0 +1,63 @@
+{
+	"libs":{
+		"+":[
+			"libicucore.tbd",
+			"libz.tbd",
+			"libstdc++.tbd",
+			"libsqlite3.tbd",
+			"libc++.tbd",
+			"libxml2.tbd",
+			"libiconv.tbd",
+			"libresolv.tbd"
+		],
+		"-":[]
+	},
+	"frameworks":{
+		"+": [
+			"StoreKit.framework",
+			"WebKit.framework",
+			"ImageIO.framework",
+			"Security.framework",
+			"CFNetwork.framework",
+			"AVFoundation.framework",
+			"AudioToolbox.framework",
+			"SystemConfiguration.framework",
+			"MobileCoreServices.framework",
+			"JavaScriptCore.framework",
+			"ExternalAccessory.framework",
+			"CoreTelephony.framework",
+			"AdSupport.framework",
+			"AuthenticationServices.framework",
+			"CoreMotion.framework",
+			"Accelerate.framework"
+		],
+		"-":[]
+	},
+    "embedframeworks":{
+		"+": [
+			"UltraBaseSDK.framework",
+			"UltraSDK.framework",
+			"UltraAnalyticsSDK.framework"
+		],
+        "-":[]
+    },
+	"xcodeelements": {},
+	"properties":{
+		"=":{
+			"ENABLE_BITCODE":"NO",
+			"GCC_ENABLE_OBJC_EXCEPTIONS":true
+			},
+		"+":{
+			"OTHER_LDFLAGS":["-ObjC"]
+			},
+		"-":{}
+	},
+	"plist":{
+		"NSPhotoLibraryUsageDescription":"相册权限",
+		"NSPhotoLibraryAddUsageDescription":"相册权限",
+		"NSLocalNetworkUsageDescription":"本地网络"
+	},
+	"files":{},
+	"folders":{},
+	"filesCompileFlag":{}
+}

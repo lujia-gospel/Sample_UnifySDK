@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>appleIsBlack</key>
+	<string>0</string>
+	<key>hasLoginAgreement</key>
+	<string>0</string>
+	<key>logEvtReport</key>
+	<string>0</string>
+	<key>loginagreement</key>
+	<string>0072E3</string>
+	<key>mainurl</key>
+	<string>https://qsdk.eagleray.games/</string>
+	<key>privacyPolicyTip</key>
+	<string>0</string>
+	<key>主按钮不可点击状态按钮文字色</key>
+	<string>CDCDCD</string>
+	<key>主按钮不可点击状态按钮背景色</key>
+	<string>17242E</string>
+	<key>主按钮不可点击状态按钮边框色</key>
+	<string>3F4951</string>
+	<key>主按钮可点击状态按钮文字色</key>
+	<string>FFFFFF</string>
+	<key>主按钮可点击状态按钮背景色</key>
+	<string>184573</string>
+	<key>主按钮可点击状态按钮边框色</key>
+	<string>3F4951</string>
+	<key>主标题文字颜色</key>
+	<string>FFFFFF</string>
+	<key>副按钮文字颜色</key>
+	<string>CDCDCD</string>
+	<key>本地提示文字颜色</key>
+	<string>999999</string>
+	<key>正文内容色</key>
+	<string>CDCDCD</string>
+	<key>正文分割线条色</key>
+	<string>505050</string>
+	<key>正文提示色</key>
+	<string>999999</string>
+	<key>正文高亮内容色</key>
+	<string>FFFFFF</string>
+	<key>游客按钮可点击状态按钮文字色</key>
+	<string>D1D1D1</string>
+	<key>游客按钮可点击状态按钮边框色</key>
+	<string>3F4951</string>
+	<key>等待文字颜色</key>
+	<string>FFFFFF</string>
+	<key>输入框提示文字颜色</key>
+	<string>999999</string>
+	<key>输入框未选中状态线条色</key>
+	<string>033B56</string>
+	<key>输入框输入文字颜色</key>
+	<string>FFFFFF</string>
+	<key>输入框选中状态线条色</key>
+	<string>72C2E2</string>
+	<key>输入框错误信息提示字体颜色</key>
+	<string>FF9C0E</string>
+	<key>退出按钮文字颜色</key>
+	<string>CDCDCD</string>
+	<key>退出按钮背景色</key>
+	<string>17242E</string>
+</dict>
+</plist>

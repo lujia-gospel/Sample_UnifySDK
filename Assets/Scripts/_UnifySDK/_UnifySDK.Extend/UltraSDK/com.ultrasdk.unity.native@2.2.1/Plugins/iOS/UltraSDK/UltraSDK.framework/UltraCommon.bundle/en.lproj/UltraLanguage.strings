@@ -1,0 +1,30 @@
+
+// 英语，注意不要随便加入回车，每个文件行数都是对应的，最后的分号和冒号之间不能有空格，方便脚本导入导出
+
+
+
+/*
+ *  所有模块
+ */
+"main_login_fail" = "Login check failed";
+"main_network_fail" = "The network is not working, please check the network status and try again";
+"main_login_account" = "Please enter the login account";
+"main_login_password" = "Please enter your login password";
+"main_no_portrait" = "Does not support portrait";
+"main_login_fail2" = "Login failed, please check the network";
+"main_active_code" = "Please enter the activation code";
+"main_active_code_fail" = "Activation code error, please re-enter";
+"main_login_problem" = "Problem feedback failed: Please select problem options";
+"main_login_problem_submit" = "Login problem submitted";
+"main_report_info" = "Failed to report role: incomplete basic parameters";
+"main_pay_gameprop" = "Failed to place an order, Error: 3130001";
+"main_pay_order" = "Failed to place an order, Error: 3130002";
+"main_pay_fail" = "Failed to place an order, Error: 3130003";
+"main_pay_iap_forbid" = "Failed to place an order: the system prohibits in-app purchases, please check permissions";
+"main_pay_dispose" = "Failed to place an order: the order is being processed, please be patient.";
+"main_pay_goodsid_fail" = "Failed to place an order: Failed to obtain the item ID";
+"main_pay_order_fail" = "Failed to place an order: failed to obtain the order number";
+"main_no_scan_login" = "No camera detected";
+"main_login_fail3" = "Login failed";
+"main_login_fail4" = "Login failed, USDK has not been initialized";
+"main_upload_fail" = "Upload failed: please try again later";

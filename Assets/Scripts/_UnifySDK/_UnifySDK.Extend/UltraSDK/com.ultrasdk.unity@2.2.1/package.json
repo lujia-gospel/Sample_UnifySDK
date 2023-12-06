@@ -1,0 +1,33 @@
+{
+
+  "version": "2.2.1",
+  "unity": "2019.4",
+  "unityRelease": "28f1c1",
+  "scopedRegistries": [
+    {
+      "name": "ultra",
+      "url": "http://npm.cd.sdksrv.com:3699/",
+      "scopes": [
+        "com.ultrasdk.unity",
+        "com.ultrasdk.unity.native"
+      ]
+    }
+  ],
+  "dependencies": {
+    "com.ultrasdk.unity.native": "2.2.1"
+  },
+  "name": "com.ultrasdk.unity",
+  "displayName": "UltraSDK-Unity",
+  "description": "UltraSDK for Unity",
+  "author": {
+    "name": "sdksrv",
+    "email": "",
+    "url": "http://docs.ultrasdk.com/usdk/usdk/produce.html"
+  },
+  "keywords": [
+    "UltraSDK-Unity",
+    "UltraSDK",
+    "Unity",
+    "SDK"
+  ]
+}

@@ -1,0 +1,30 @@
+
+// 繁体中文，注意不要随便加入回车，每个文件行数都是对应的，最后的分号和冒号之间不能有空格，方便脚本导入导出
+
+
+
+/*
+ *  所有模块
+ */
+"main_login_fail" = "登錄檢測失敗";
+"main_network_fail" = "網絡不給力，請檢查網絡狀態後重試";
+"main_login_account" = "請輸入登錄賬號";
+"main_login_password" = "請輸入登錄密碼";
+"main_no_portrait" = "不支持豎屏";
+"main_login_fail2" = "登錄失敗，請檢查網絡";
+"main_active_code" = "請輸入激活碼";
+"main_active_code_fail" = "激活碼錯誤，請重新輸入";
+"main_login_problem" = "問題反饋失敗：請選擇問題選項";
+"main_login_problem_submit" = "登錄問題已提交";
+"main_report_info" = "角色上報失敗：基礎參數不全";
+"main_pay_gameprop" = "下單失敗，Error: 3130001";
+"main_pay_order" = "下單失敗，Error: 3130002";
+"main_pay_fail" = "下單失敗，Error: 3130003";
+"main_pay_iap_forbid" = "下單失敗：系統禁止App內購，請檢查權限";
+"main_pay_dispose" = "下單失敗：訂單處理中，請耐心等待。";
+"main_pay_goodsid_fail" = "下單失敗：道具ID獲取失敗";
+"main_pay_order_fail" = "下單失敗：訂單號獲取失敗";
+"main_no_scan_login" = "未檢測到相機";
+"main_login_fail3" = "登錄失敗";
+"main_login_fail4" = "登錄失敗，USDK還未初始化";
+"main_upload_fail" = "上傳失敗：請稍後重試";

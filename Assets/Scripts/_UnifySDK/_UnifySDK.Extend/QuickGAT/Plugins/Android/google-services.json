@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "920163270189",
+    "project_id": "bzxd-go",
+    "storage_bucket": "bzxd-go.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:920163270189:android:2e9f5abd5f9325db8042a4",
+        "android_client_info": {
+          "package_name": "com.game.bzxd.go"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "920163270189-dd8cnk7kv6ndqtfe804qthhjunspkmpa.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.game.bzxd.go",
+            "certificate_hash": "b3cd7963e90b6dc654bf7ec77b21bc99236e81a7"
+          }
+        },
+        {
+          "client_id": "920163270189-8q3hptv3koe3cks77sq1bjml5h6h9q42.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCsMa0HTmfO5gcFNpuXlzcEFWdzQxIHexE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "920163270189-8q3hptv3koe3cks77sq1bjml5h6h9q42.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

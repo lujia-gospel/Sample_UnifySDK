@@ -1,0 +1,30 @@
+
+// 简体中文，注意不要随便加入回车，每个文件行数都是对应的，最后的分号和冒号之间不能有空格，方便脚本导入导出
+
+
+
+/*
+ *  所有模块
+ */
+"main_login_fail" = "登录检测失败";
+"main_network_fail" = "网络不给力，请检查网络状态后重试";
+"main_login_account" = "请输入登录账号";
+"main_login_password" = "请输入登录密码";
+"main_no_portrait" = "不支持竖屏";
+"main_login_fail2" = "登录失败，请检查网络";
+"main_active_code" = "请输入激活码";
+"main_active_code_fail" = "激活码错误，请重新输入";
+"main_login_problem" = "问题反馈失败：请选择问题选项";
+"main_login_problem_submit" = "登录问题已提交";
+"main_report_info" = "角色上报失败：基础参数不全";
+"main_pay_gameprop" = "下单失败，Error: 3130001";
+"main_pay_order" = "下单失败，Error: 3130002";
+"main_pay_fail" = "下单失败，Error: 3130003";
+"main_pay_iap_forbid" = "下单失败：系统禁止App内购，请检查权限";
+"main_pay_dispose" = "下单失败：订单处理中，请耐心等待。";
+"main_pay_goodsid_fail" = "下单失败：道具ID获取失败";
+"main_pay_order_fail" = "下单失败：订单号获取失败";
+"main_no_scan_login" = "未检测到相机";
+"main_login_fail3" = "登录失败";
+"main_login_fail4" = "登录失败，USDK还未初始化";
+"main_upload_fail" = "上传失败：请稍后重试";

@@ -1,0 +1,6 @@
+framework module UltraSDK {
+  umbrella header "UltraSDK.h"
+
+  export *
+  module * { export * }
+}
