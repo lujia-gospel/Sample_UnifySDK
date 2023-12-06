@@ -22,7 +22,7 @@ namespace UnifySDK
                 }
                 
             }
-            unifySDKs.Sort((x, y) => x.Priority - y.Priority );
+            unifySDKs.Sort((x, y) =>  y.Priority - x.Priority);
             return unifySDKs;
         }
     }

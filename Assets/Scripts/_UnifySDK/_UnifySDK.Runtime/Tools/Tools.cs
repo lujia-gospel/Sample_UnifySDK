@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 #if UNITY_EDITOR
+using System.IO;
 using UnityEditor;
 #endif
 using UnityEngine;
+using XLua;
 
 namespace UnifySDK{
     
@@ -38,20 +41,50 @@ namespace UnifySDK{
             return list;
         }
 #if UNITY_EDITOR
+        [BlackList]
         public static void GetScriptPath(string scriptName ,ref string result)
         {
             if (!string.IsNullOrEmpty(scriptName))
             {
-                string[] paths = AssetDatabase.FindAssets($"t:script {scriptName}", new[] {"Assets"});
-                if(paths.Length>1)
-                    UDebug.Sys.LogError($"有同名脚本文件 {scriptName} 获取路径失败");
-                else if (paths.Length > 0)
-                    result = AssetDatabase.GUIDToAssetPath(paths[0]).Replace($"{scriptName}.cs","Resources");
-                else
+                string[] assetPaths = AssetDatabase.FindAssets($"t:script {scriptName}", new[] {"Assets"});
+
+                string scriptPath = string.Empty;
+                foreach (var assetPath in assetPaths)
+                {
+                   var path =AssetDatabase.GUIDToAssetPath(assetPath);
+                   if (Path.GetFileName(path) == $"{scriptName}.cs")
+                   {
+                       scriptPath = path;
+                       break;
+                   }
+                }
+                if(string.IsNullOrEmpty(scriptPath))
                     UDebug.Sys.LogError($" {scriptName}.cs 没有该脚本");
+                else
+                    result = scriptPath.Replace($"{scriptName}.cs","Resources");
             }
         }
 #endif
+        public static void WriteFileString(string path, string data)
+        {
+            string p = System.IO.Path.GetDirectoryName(path);
+            if (!System.IO.Directory.Exists(p))
+            {
+                System.IO.Directory.CreateDirectory(p);
+            }
+
+            System.IO.File.WriteAllText(path, data, new UTF8Encoding(false));
+        }
+
+        public static string ReadFileString(string path)
+        {
+            if (System.IO.File.Exists(path))
+            {
+                return System.IO.File.ReadAllText(path);
+            }
+
+            return string.Empty;
+        }
     }
 }
 

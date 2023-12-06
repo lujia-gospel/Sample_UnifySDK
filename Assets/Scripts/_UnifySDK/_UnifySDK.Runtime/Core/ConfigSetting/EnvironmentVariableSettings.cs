@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using XLua;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -14,6 +15,7 @@ namespace UnifySDK
 
         private static string m_SavePath = string.Empty;
 #if UNITY_EDITOR
+        [BlackList]
         public static string SavePath {
             get
             {
@@ -80,6 +82,7 @@ namespace UnifySDK
 #else
             // 将配置文件转化为对象
             environmentVariableSettings = Resources.Load<EnvironmentVariableSettings>("EnvironmentVariableSettings");
+            //environmentVariableSettings.OnAfterDeserialize();
 #endif
             return environmentVariableSettings;
         }
@@ -104,7 +107,7 @@ namespace UnifySDK
             argumentsSDKSettings.TryGetValue(targetPlatform, out ret);
             #if !UNITY_EDITOR
             if (string.IsNullOrEmpty(ret))
-                UDebug.Logic.LogError($"包里不应该有 {targetPlatform}");
+                UDebug.Logic.LogError($"配置表里没有 {targetPlatform}");
             #endif
             return ret;
         }
@@ -112,14 +115,16 @@ namespace UnifySDK
         /// <summary>Serialization override.</summary>
         public void OnBeforeSerialize()
         {
-            Keys.Clear();
-            Values.Clear();
-            
-            foreach (var kv in argumentsSDKSettings)
-            {
-                Keys.Add(kv.Key);
-                Values.Add(kv.Value);
-            }
+            // Keys.Clear();
+            // Values.Clear();
+            //
+            // foreach (var kv in argumentsSDKSettings)
+            // {
+            //     UDebug.Logic.LogError($"   OnBeforeSerialize   Keys:  {kv.Key}  ");
+            //     UDebug.Logic.LogError($"   OnBeforeSerialize   Values:  {kv.Value}   ");
+            //     Keys.Add(kv.Key);
+            //     Values.Add(kv.Value);
+            // }
         }
 
         /// <summary>Serialization override.</summary>
@@ -129,6 +134,22 @@ namespace UnifySDK
             for (int i = 0; i < Math.Min(Keys.Count, Values.Count); i++)
             {
                 argumentsSDKSettings.Add(Keys[i], Values[i]);
+            }
+        }
+
+        public Dictionary<string, string> GetDic()
+        {
+            return argumentsSDKSettings;
+        }
+
+        public void UpdateDic(Dictionary<string, string> dic)
+        {
+            argumentsSDKSettings.Clear();
+            Keys.Clear();
+            Values.Clear();
+            foreach (var kv in dic)
+            {
+                SetSDKValue(kv.Key, kv.Value);
             }
         }
     }

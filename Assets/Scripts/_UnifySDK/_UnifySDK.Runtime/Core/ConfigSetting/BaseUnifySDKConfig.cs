@@ -14,6 +14,7 @@ namespace UnifySDK
         {
             var path = string.IsNullOrEmpty(configName) ? GetConfigName():configName;  
    
+            UDebug.Res.Log($"  UnifySDKConfigSettings  Resources.Load  path {path}  ");
             // 将配置文件转化为对象  
             var config = Resources.Load<UnifySDKConfigSettings>(path);
             
