@@ -15,5 +15,13 @@ MonoBehaviour:
   EditorRunUnifySDK: 1
   AssetBundleMode: 0
   UITemplateMode: 0
-  Keys: []
-  Values: []
+  Keys:
+  - QuickSDK
+  - Channel_China
+  - ReYunSDK
+  - CrasheyeSDK
+  Values:
+  - Android_Default
+  - Android_Default
+  - Android_B
+  - Android_Default
