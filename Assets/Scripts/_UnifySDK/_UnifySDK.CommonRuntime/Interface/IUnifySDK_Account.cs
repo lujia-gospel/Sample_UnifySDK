@@ -1,13 +1,16 @@
 using UnifySDK.Event;
+using UnifySDK.Event.Account;
 
 namespace UnifySDK
 {
     [UnifySDKInterface]
     public interface IUnifySDK_Account
     {
-        void Login();
+        void Login(bool isShowMenu);
         void Logout();
         void AccountDeletion();
+        void UnAccountDeletion();
+        bool IsUserGuest();
         void QuitGame();
         bool CanQuitGame();
         void ShowMenu();
@@ -15,16 +18,29 @@ namespace UnifySDK
         void ShowUserCenter();
         void ShowCustomerCenter();
         void ShowPrivacy();
+        string GetCPSChannelID();
         
         #region Listener
-        public AEvent<InitSuccessData> OnInitSuccess { get; set; }
-        public AEvent<InitFailedData> OnInitFailed { get; set; }
+        
+        [UnifySDKEvent(typeof(AEvent<LoginSuccessData>))]
         public AEvent<LoginSuccessData> OnLoginSuccess { get; set; }
+        
+        [UnifySDKEvent(typeof(AEvent<SwitchAccountSuccessData>))]
         public AEvent<SwitchAccountSuccessData> OnSwitchAccountSuccess { get; set; }
+        
+        [UnifySDKEvent(typeof(AEvent<LoginFailedData>))]
         public AEvent<LoginFailedData> OnLoginFailed { get; set; }
+        
+        [UnifySDKEvent(typeof(AEvent<LogoutSuccessData>))]
         public AEvent<LogoutSuccessData> OnLogoutSuccess { get; set; }
+        
+        [UnifySDKEvent(typeof(AEvent<ExitSuccessData>))]
         public AEvent<ExitSuccessData> OnExitSuccess { get; set; }
+        
+        [UnifySDKEvent(typeof(AEvent<PrivacyAgreeData>))]
         public AEvent<PrivacyAgreeData> OnPrivacyAgree { get; set; }
+        
+        [UnifySDKEvent(typeof(AEvent<PrivacyRefuseData>))]
         public AEvent<PrivacyRefuseData> OnPrivacyRefuse { get; set; }
         #endregion
     }

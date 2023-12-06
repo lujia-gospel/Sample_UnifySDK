@@ -1,4 +1,4 @@
-using Tutorial;
+using System.Linq;
 using UnifySDK.Event;
 
 namespace UnifySDK 
@@ -6,22 +6,41 @@ namespace UnifySDK
     public abstract class BaseUnifySDK<T> : IUnifySDK where T : BaseUnifySDKConfig  
     {
         //默认SDK根据优先级来获取  初始化也是根据优先级来
-        public virtual int Priority { get=>0; }
+        public virtual int Priority => 0;
+
+        public virtual bool AutoInit => true;
+
+        protected virtual bool IsInit  { get;set; }
         
-        public virtual bool AutoInit  { get=>true; }
+        public UnifySDKType SDKType { get;set; }
         
-        public string SDKName { get;set; }
 
         protected T Config;
         
-        protected BaseUnifySDK(T t,string sdkName)
+        public T GetConfig => Config;
+        
+        public T SetConfig
         {
-            SDKName = sdkName;
-            Config = t;
-            UnifySDKEventSystem.Instance.UnifySDKInitEvent(this);
+            set => Config = value;
         }
 
-        public abstract void OnInit();
+        protected BaseUnifySDK(T t,UnifySDKType type)
+        {
+            SDKType = type;
+            Config = t;
+            IsInit = false;
+            UnifySDKEventSystem.Instance.UnifySDKInitEvent(this);
+            OnInitData.Handler += (data, eventArgs) =>
+            {
+                if ( ((InitSDKData)data).InitSDKs.Contains(SDKType) && IsInit == false)
+                    OnInit();
+            };
+        }
+
+        public virtual void OnInit()
+        {
+            IsInit = true;
+        }
 
         /// <summary>
         /// 设置App版本号
@@ -68,6 +87,11 @@ namespace UnifySDK
 
         public virtual void OnDestroy(){}
         
+        #region Listener
+        public AEvent<InitSDKData> OnInitData { get; set; }
+        public AEvent<InitSuccessData> OnInitSuccess { get; set; }
+        public AEvent<InitFailedData> OnInitFailed { get; set; }
+        #endregion
     }
 }
 

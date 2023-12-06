@@ -12,9 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 688155c9de764e8189e6c8427e768d3c, type: 3}
   m_Name: EnvironmentVariableSettings
   m_EditorClassIdentifier: 
+  EditorRunUnifySDK: 1
   AssetBundleMode: 0
   UITemplateMode: 0
-  Keys:
-  - QuickSDK
-  Values:
-  - Android_Default
+  Keys: []
+  Values: []

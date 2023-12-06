@@ -1,11 +1,15 @@
+using UnifySDK.Event;
 namespace UnifySDK
 {
     [UnifySDKInterface]
     public interface IUnifySDK
     {
-        int Priority { get ; }//根据优先级初始化
+        /// <summary>
+        /// 根据优先级初始化
+        /// </summary>
+        int Priority { get ; }
 
-        string SDKName{ get ; set; }
+        UnifySDKType SDKType{ get ; set; }
 
         bool AutoInit { get; }
 
@@ -38,14 +42,17 @@ namespace UnifySDK
         /// 获取渠道名
         /// </summary>
         string GetChannelName();
-
-        /// <summary>
-        /// 获取设备ID
-        /// </summary>
-        string GetDeviceId();
-   
         
         void OnDestroy();
+
+        [UnifySDKEvent(typeof(AEvent<InitSDKData>))]
+        public AEvent<InitSDKData> OnInitData { get; set; }
+
+        [UnifySDKEvent(typeof(AEvent<InitSuccessData>))]
+        public AEvent<InitSuccessData> OnInitSuccess { get; set; }
+
+        [UnifySDKEvent(typeof(AEvent<InitFailedData>))]
+        public AEvent<InitFailedData> OnInitFailed { get; set; }
     }
 }
 

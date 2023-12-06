@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using XLua;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -14,6 +15,7 @@ namespace UnifySDK
 
         private static string m_SavePath = string.Empty;
 #if UNITY_EDITOR
+        [BlackList]
         public static string SavePath {
             get
             {
@@ -104,7 +106,7 @@ namespace UnifySDK
             argumentsSDKSettings.TryGetValue(targetPlatform, out ret);
             #if !UNITY_EDITOR
             if (string.IsNullOrEmpty(ret))
-                UDebug.Logic.LogError($"包里不应该有 {targetPlatform}");
+                UDebug.Logic.LogError($"配置表里没有 {targetPlatform}");
             #endif
             return ret;
         }
@@ -129,6 +131,20 @@ namespace UnifySDK
             for (int i = 0; i < Math.Min(Keys.Count, Values.Count); i++)
             {
                 argumentsSDKSettings.Add(Keys[i], Values[i]);
+            }
+        }
+
+        public Dictionary<string, string> GetDic()
+        {
+            return argumentsSDKSettings;
+        }
+
+        public void UpdateDic(Dictionary<string, string> dic)
+        {
+            argumentsSDKSettings.Clear();
+            foreach (var kv in dic)
+            {
+                SetSDKValue(kv.Key, kv.Value);
             }
         }
     }

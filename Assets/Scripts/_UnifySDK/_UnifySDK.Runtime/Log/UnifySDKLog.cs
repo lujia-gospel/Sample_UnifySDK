@@ -150,9 +150,9 @@ namespace UnifySDK
         public static UDebug UI = UDebug.Create("UI", "#008080ff");
     }
     
-#if UNITY_EDITOR
+
     public class DebugLogExtend {
-    
+#if UNITY_EDITOR
         private static Type m_ConsoleWindow;
 
         [UnityEditor.Callbacks.OnOpenAsset(0)] //1 : 使用OnOpenAsset属性 接管当有资源打开时的操作
@@ -231,6 +231,6 @@ namespace UnifySDK
 
             return ("", -1);
         }
-    }
 #endif
+    }
 }
