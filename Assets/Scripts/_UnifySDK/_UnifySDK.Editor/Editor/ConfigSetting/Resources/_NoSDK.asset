@@ -12,7 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51ce5b995582b124ca3d32a1883eec3f, type: 3}
   m_Name: _NoSDK
   m_EditorClassIdentifier: 
-  m_UnifySDKAssetInfos:
-  - assetFolder: Plugins
-  - assetFolder: Plugins/Android/OAIDHelper.java
-  - assetFolder: Scripts/_UnifySDK/_UnifySDK.Extend/DeviceOAID
+  m_UnifySDKAssetInfos: []

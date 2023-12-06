@@ -3,19 +3,22 @@ using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Text;
 using UnityEditor.Build.Reporting;
 
-namespace UnifySDK.Editor {
-
+namespace UnifySDK.Editor
+{
     public class UnifySDKAssetsEditor : EditorWindow
     {
         private const string ExternalRootPath = "./Tools/SdkFrame";
+
         [MenuItem("Tools/UnifySDK/资源配置")]
         static void ShowWindow()
         {
             GetWindow<UnifySDKAssetsEditor>();
         }
+
         private UnifySDKAssetsSetting _unifySDKAssetsSetting;
         private UnifySDKAssetsSetting[] _unifySDKAssetsSettings;
         private Vector2 m_ScrollViewVector1;
@@ -23,7 +26,8 @@ namespace UnifySDK.Editor {
         private ReorderableList m_ReorderableList2;
         private bool m_IsForceText;
         private int selectedOption = 0;
-        private string sdkFieldName="Your SDK Name";
+        private string sdkFieldName = "Your SDK Name";
+
         private void Awake()
         {
             titleContent.text = "UnifySDK资源配置";
@@ -32,7 +36,7 @@ namespace UnifySDK.Editor {
         private void OnGUI()
         {
             Init();
-            
+
             var style = UnifySDKAssetStyle.Get();
 
             if (!m_IsForceText)
@@ -40,97 +44,174 @@ namespace UnifySDK.Editor {
                 EditorGUILayout.LabelField(style.forceText);
                 return;
             }
+
             EditorGUILayout.BeginHorizontal(EditorStyles.toolbar);
-            
+
             GUILayout.FlexibleSpace();
-            
+
             EditorGUILayout.EndHorizontal();
             
+            AssetsSettingsToolOnGUI1();
+
             AssetsSettingsOnGUI();
-            
-            AssetsSettingsToolOnGUI();
-            
+
+            AssetsSettingsToolOnGUI2();
+
             CurrentAssetsSettingOnGUI();
         }
-        private void Init() 
+
+        private void Init()
         {
             if (_unifySDKAssetsSetting == null)
             {
                 m_IsForceText = EditorSettings.serializationMode == SerializationMode.ForceText;
                 if (!m_IsForceText)
-                { 
+                {
                     return;
                 }
+
                 _unifySDKAssetsSettings = UnifySDKAssetsSetting.GetUnifySDKAssetsSettings();
             }
         }
 
+        private void AssetsSettingsToolOnGUI1()
+        {
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("所有sdk拷贝到工程内", GUILayout.Width(140), GUILayout.Height(20)))
+            {
+                if (EditorUtility.DisplayDialog("提示", "所有sdk拷贝到工程内", "确定", "取消"))
+                {
+                    CopyAllSDKToInternal();
+                }
+            }
+            
+            if (GUILayout.Button("所有sdk拷贝到外部", GUILayout.Width(140), GUILayout.Height(20)))
+            {
+                var code = EditorUtility.DisplayDialogComplex("提示", "所有sdk拷贝到外部", "覆盖拷贝", "取消","先删除后拷贝");
+
+                if (code==0)
+                {
+                    CopyAllSDKToExternal();
+                }
+                else if (code == 2)
+                {
+                    DeleteAllExternal(false);
+                    CopyAllSDKToExternal();
+                }
+            }
+            
+            if (GUILayout.Button("根据配置删除所有SDK工程内资源", GUILayout.Width(200), GUILayout.Height(20)))
+            {
+                if (EditorUtility.DisplayDialog("提示", "根据配置删除所有工程内资源", "确定", "取消"))
+                {
+                    DeleteAllInternal();
+                }
+            }
+            
+            GUILayout.EndHorizontal();
+        }
+
         private void AssetsSettingsOnGUI()
         {
-            if (_unifySDKAssetsSettings.Length>0)
+     
+            if (_unifySDKAssetsSettings.Length > 0)
             {
-                m_ScrollViewVector1 = GUILayout.BeginScrollView(m_ScrollViewVector1,GUILayout.Width(position.width), GUILayout.Height(70));
-               
+                m_ScrollViewVector1 = GUILayout.BeginScrollView(m_ScrollViewVector1, GUILayout.Width(position.width),
+                    GUILayout.Height(70));
+
                 GUILayout.BeginHorizontal();
                 // 在这里添加需要的水平列表项
                 for (int i = 0; i < _unifySDKAssetsSettings.Length; i++)
                 {
                     Color bc = GUI.backgroundColor;
-                    if (i==selectedOption)
+                    if (i == selectedOption)
                         GUI.backgroundColor = Color.grey;
                     float width = Encoding.Default.GetByteCount(_unifySDKAssetsSettings[i].name);
-                    if (GUILayout.Button(_unifySDKAssetsSettings[i].name, GUILayout.Width(width*10+2), GUILayout.Height(30)))
+                    if (GUILayout.Button(_unifySDKAssetsSettings[i].name, GUILayout.Width(width * 10 + 2),
+                            GUILayout.Height(30)))
                     {
                         selectedOption = i;
                     }
+
                     GUI.backgroundColor = bc;
                 }
 
                 GUILayout.EndHorizontal();
-                if (_unifySDKAssetsSetting!=_unifySDKAssetsSettings[selectedOption])
+                if (_unifySDKAssetsSetting != _unifySDKAssetsSettings[selectedOption])
                 {
                     _unifySDKAssetsSetting = _unifySDKAssetsSettings[selectedOption];
-                    m_ReorderableList2 = new ReorderableList(_unifySDKAssetsSetting.UnifySDKResPathInfos, null, true, true, true, true);
+                    m_ReorderableList2 = new ReorderableList(_unifySDKAssetsSetting.UnifySDKResPathInfos, null, true,
+                        true, true, true);
                     m_ReorderableList2.drawHeaderCallback = OnDrawHeaderCallback;
                     m_ReorderableList2.drawElementCallback = OnDrawElementCallback;
                     m_ReorderableList2.elementHeight += 8;
                 }
+                
                 EditorGUILayout.LabelField("Selected Setting: " + _unifySDKAssetsSetting.name);
                 GUILayout.EndScrollView();
             }
         }
 
-        private void AssetsSettingsToolOnGUI()
+        private void AssetsSettingsToolOnGUI2()
         {
+            
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button("根据配置移动到外部", GUILayout.Width(130), GUILayout.Height(20)))
+            
+            if (GUILayout.Button("根据配置拷贝到工程内", GUILayout.Width(140), GUILayout.Height(20)))
             {
-                MoveToProject(_unifySDKAssetsSetting,true,true);
+                if (EditorUtility.DisplayDialog("提示", "根据配置拷贝到工程内,该操作会覆盖本地修改", "确定", "取消"))
+                {
+                    MoveToProject(_unifySDKAssetsSetting);
+                }
             }
             
-            if (GUILayout.Button("根据配置移动到工程内", GUILayout.Width(140), GUILayout.Height(20)))
+            if (GUILayout.Button("根据配置拷贝到外部", GUILayout.Width(140), GUILayout.Height(20)))
             {
-                MoveToProject(_unifySDKAssetsSetting);
+                var code = EditorUtility.DisplayDialogComplex("提示", "根据配置拷贝到外部", "覆盖拷贝", "取消","先删除后拷贝");
+
+                if (code==0)
+                {
+                    MoveToProject(_unifySDKAssetsSetting, true);
+                }
+                else if (code == 2)
+                {
+                    DeleteSDKAssets(_unifySDKAssetsSetting,1,isRefresh:false);
+                    MoveToProject(_unifySDKAssetsSetting, true);
+                }
+            }
+            
+            if (GUILayout.Button("根据配置删除工程内资源", GUILayout.Width(180), GUILayout.Height(20)))
+            {
+                if (EditorUtility.DisplayDialog("提示", "根据配置删除工程内资源,请确认已保存本地修改", "确定", "取消"))
+                {
+                    DeleteSDKAssets(_unifySDKAssetsSetting, 0);
+                } 
             }
 
+
+
             var btnStr = $"删除当前{_unifySDKAssetsSetting.name}资源配置";
-            var btnWidth = Encoding.Default.GetByteCount(_unifySDKAssetsSetting.name)*10+100;
+            var btnWidth = Encoding.Default.GetByteCount(_unifySDKAssetsSetting.name) * 10 + 100;
             if (GUILayout.Button(btnStr, GUILayout.Width(btnWidth), GUILayout.Height(20)))
             {
                 string strTip = $"是否删除该{_unifySDKAssetsSetting.name}资源配置文件";
-                if (EditorUtility.DisplayDialog("提示",strTip , "确定","取消"))
+                if (EditorUtility.DisplayDialog("提示", strTip, "确定", "取消"))
                 {
-                    AssetDatabase.DeleteAsset($"{UnifySDKAssetsSetting.SavePath}/{_unifySDKAssetsSetting.name}.asset");
+                    UnifySDKConfigSettingsEditor.JenkinsPropertiesDeleteSDK(_unifySDKAssetsSetting.name);
+                    DeleteSDKAssets(_unifySDKAssetsSetting);
+                    AssetDatabase.DeleteAsset( $"{Path.Combine(UnifySDKAssetsSetting.SavePath,_unifySDKAssetsSetting.name)}.asset");
                     _unifySDKAssetsSetting = null;
                     selectedOption--;
                     AssetDatabase.Refresh();
                 }
             }
-            bool isAdd= GUILayout.Button("添加资源配置", GUILayout.Width(100), GUILayout.Height(20));
-            sdkFieldName =  GUILayout.TextField(sdkFieldName,GUILayout.Width(position.width-(btnWidth+390)),GUILayout.Height(20));
+
+            bool isAdd = GUILayout.Button("添加资源配置", GUILayout.Width(100), GUILayout.Height(20));
+            sdkFieldName = GUILayout.TextField(sdkFieldName, GUILayout.Width(position.width - (btnWidth + 500)),
+                GUILayout.Height(20));
             if (isAdd)
             {
-                bool isNeedTip = string.IsNullOrEmpty(sdkFieldName)|| sdkFieldName=="Your SDK Name";
+                bool isNeedTip = string.IsNullOrEmpty(sdkFieldName) || sdkFieldName == "Your SDK Name";
                 string strTip = "你的SDK名字不能为空或者是\"Your SDK Name\"";
                 for (int i = 0; i < _unifySDKAssetsSettings.Length; i++)
                 {
@@ -140,6 +221,7 @@ namespace UnifySDK.Editor {
                         strTip = $"该 {sdkFieldName} 已经存在";
                     }
                 }
+
                 if (isNeedTip)
                     EditorUtility.DisplayDialog("提示", strTip, "确定");
                 else
@@ -150,6 +232,7 @@ namespace UnifySDK.Editor {
                     }
                 }
             }
+
             GUILayout.EndHorizontal();
         }
 
@@ -179,7 +262,7 @@ namespace UnifySDK.Editor {
             var info = _unifySDKAssetsSetting.UnifySDKResPathInfos[index];
             rect.height = EditorGUIUtility.singleLineHeight;
             rect.y += 2;
- 
+
             EditorGUI.BeginChangeCheck();
             Rect rect2 = new Rect(rect) { width = 100f };
             Rect rect3 = new Rect(rect) { x = rect2.x + rect2.width, width = rect.width - rect2.width };
@@ -187,14 +270,16 @@ namespace UnifySDK.Editor {
 
             EditorGUI.LabelField(rect2, style.assetPathTitle);
             EditorGUI.BeginChangeCheck();
-            
+
             info.assetFolder = EditorGUI.TextField(rect3, info.assetFolder);
-            var pathStrs= OnDrawElementAcceptDrop(rect3, info.assetFolder);
-            info.assetFolder =pathStrs.Length>0 ? pathStrs[0]:"";
+            var pathStrs = OnDrawElementAcceptDrop(rect3, info.assetFolder);
+            info.assetFolder = pathStrs.Length > 0 ? pathStrs[0] : "";
             for (int i = 1; i < pathStrs.Length; i++)
             {
-                _unifySDKAssetsSetting.UnifySDKResPathInfos.Add(new UnifySDKAssetsSetting.UnifySDKAssetInfo(pathStrs[i]));
+                _unifySDKAssetsSetting.UnifySDKResPathInfos.Add(
+                    new UnifySDKAssetsSetting.UnifySDKAssetInfo(pathStrs[i]));
             }
+
             valueChanged |= EditorGUI.EndChangeCheck();
 
             if (valueChanged)
@@ -207,12 +292,13 @@ namespace UnifySDK.Editor {
 
         private string[] OnDrawElementAcceptDrop(Rect rect, string label)
         {
-         
             if (rect.Contains(UnityEngine.Event.current.mousePosition))
             {
-                if (DragAndDrop.paths != null && DragAndDrop.paths.Length > 0 && !string.IsNullOrEmpty(DragAndDrop.paths[0]))
+                if (DragAndDrop.paths != null && DragAndDrop.paths.Length > 0 &&
+                    !string.IsNullOrEmpty(DragAndDrop.paths[0]))
                 {
-                    if (UnityEngine.Event.current.type == EventType.DragUpdated ||    UnityEngine.Event.current.type == EventType.DragPerform)
+                    if (UnityEngine.Event.current.type == EventType.DragUpdated ||
+                        UnityEngine.Event.current.type == EventType.DragPerform)
                     {
                         DragAndDrop.visualMode = DragAndDropVisualMode.Copy;
                     }
@@ -227,7 +313,7 @@ namespace UnifySDK.Editor {
                 }
             }
 
-            return new string[] {label};
+            return new string[] { label };
         }
 
         public static string[] PathArrayToStr(string[] paths)
@@ -235,9 +321,10 @@ namespace UnifySDK.Editor {
             var pathStrs = new string[paths.Length];
             for (int i = 0; i < paths.Length; i++)
             {
-                pathStrs[i] =  paths[i].Replace("Assets/",string.Empty);
+                pathStrs[i] = paths[i].Replace("Assets/", string.Empty);
             }
-           //string.Join("|", paths) ;
+
+            //string.Join("|", paths) ;
             return pathStrs;
         }
 
@@ -246,17 +333,17 @@ namespace UnifySDK.Editor {
             try
             {
                 //将对象实例化  
-                ScriptableObject so = CreateInstance<UnifySDKAssetsSetting>();  
-        
-                if (so == null)  
-                {  
-                    UDebug.Sys.LogError("该对象无效，无法将对象实例化");  
-                    return false;  
-                } 
-            
-                var assetPath= $"{UnifySDKAssetsSetting.SavePath}/{name}.asset";
+                ScriptableObject so = CreateInstance<UnifySDKAssetsSetting>();
+
+                if (so == null)
+                {
+                    UDebug.Sys.LogError("该对象无效，无法将对象实例化");
+                    return false;
+                }
+
+                var assetPath = $"{Path.Combine(UnifySDKAssetsSetting.SavePath,name)}.asset";
                 //按指定路径生成配置文件  
-                AssetDatabase.CreateAsset(so,assetPath);
+                AssetDatabase.CreateAsset(so, assetPath);
                 AssetDatabase.SaveAssets();
             }
             catch (Exception e)
@@ -264,88 +351,128 @@ namespace UnifySDK.Editor {
                 Console.WriteLine(e);
                 return false;
             }
+
             return true;
         }
-        
-        public static void MoveToProject(UnifySDKAssetsSetting setting,bool isReverse=false,bool isDelSource=false) 
-        { 
+
+        public static void MoveToProject(UnifySDKAssetsSetting setting, bool isReverse = false,
+            bool isDelSource = false,bool isRefresh=true)
+        {
             if (setting == null)
             {
                 UDebug.Sys.LogError("UnifySDKAssetsSetting 配置文件为空 ");
                 return;
             }
-            string sourcePath ,targetPath = "";
-            string externalPath = $"{ExternalRootPath}/{setting.name}";
-           
+
+            string sourcePath, targetPath = "";
+            string externalPath =Path.Combine(ExternalRootPath,setting.name);
+
             foreach (var info in setting.UnifySDKResPathInfos)
             {
-                sourcePath = isReverse? $"{Application.dataPath}/{info.assetFolder}" : $"{externalPath}/{info.assetFolder}";
-                targetPath = isReverse? $"{externalPath}/{info.assetFolder}" : $"{Application.dataPath}/{info.assetFolder}";
+                if (string.IsNullOrEmpty(info.assetFolder) )
+                {
+                    UDebug.Sys.LogError($"{setting.name} 请检查资源路径 ， 包含空路径  ");
+                    continue;
+                }
+                sourcePath = isReverse
+                    ? Path.Combine(Application.dataPath,info.assetFolder) 
+                    : Path.Combine(externalPath,info.assetFolder);
+                targetPath = isReverse
+                    ? Path.Combine(externalPath,info.assetFolder)
+                    : Path.Combine(Application.dataPath,info.assetFolder) ;
                 DirectoryInfo sourceDireInfo = new DirectoryInfo(sourcePath);
                 DirectoryInfo destDire = new DirectoryInfo(targetPath);
-                CopyDireToDire(sourceDireInfo.FullName, destDire.FullName,isDelSource);
+                UDebug.Sys.Log($"  CopyDireToDire  sourcePath: {sourcePath} targetPath: {targetPath}  ");
+                CopyDireToDire(sourceDireInfo.FullName, destDire.FullName, isDelSource);
+            }
+
+            if (isRefresh)
+                AssetDatabase.Refresh();
+        }
+        
+        public  void CopyAllSDKToInternal() 
+        {
+            for (int i = 0; i < _unifySDKAssetsSettings.Length; i++)
+            {
+                MoveToProject(_unifySDKAssetsSettings[i],isRefresh:false);
+            }
+            AssetDatabase.Refresh();
+        }
+        
+        public  void CopyAllSDKToExternal() 
+        {
+            for (int i = 0; i < _unifySDKAssetsSettings.Length; i++)
+            {
+                MoveToProject(_unifySDKAssetsSettings[i],true,isRefresh:false);
             }
             AssetDatabase.Refresh();
         }
 
-        public static void DeleteExternalSDKAssets(UnifySDKAssetsSetting setting,bool clearConfigSetting=false)
+        public void DeleteAllInternal(bool isRefresh=true)
         {
-            string externalPath = $"{ExternalRootPath}/{setting.name}";
-            if (Directory.Exists(externalPath))
-                Directory.Delete(externalPath);
-            if (clearConfigSetting)
-                setting.UnifySDKResPathInfos.Clear();
-        }
-
-        [MenuItem("Tools/Unify/TestBuildApk")]
-        public static void TestBuildApk()
-        {
-            BuildBeforeSetSDK();
-            var apkPath = "./APK/TestBuildApk.apk";
-            BuildReport buildReport = BuildPipeline.BuildPlayer(EditorBuildSettings.scenes, apkPath,
-                BuildTarget.Android,
-                BuildOptions.CompressWithLz4HC);
-            AssetDatabase.Refresh();
-        }
-
-        public static void BuildBeforeSetSDK()
-        {
-            try
+            for (int i = 0; i < _unifySDKAssetsSettings.Length; i++)
             {
-                BuildBeforeClearSDKAssets();
-                
-                for (int i = 0; i < Math.Min(EnvironmentVariableSettings.Instance.Keys.Count, EnvironmentVariableSettings.Instance.Values.Count); i++)
-                {
-                    var assetsSetting =   UnifySDKAssetsSetting.GetUnifySDKAssetsSetting(EnvironmentVariableSettings.Instance.Keys[i]);
-                    MoveToProject(assetsSetting);
-                }
+                DeleteSDKAssets(_unifySDKAssetsSettings[i],0,isRefresh:false);
             }
-            catch (Exception e)
-            {
-                UDebug.Sys.LogError(e);
-                throw;
-            }
-        }
 
-        public static void BuildBeforeClearSDKAssets()
+            if (isRefresh)
+                AssetDatabase.Refresh();
+           
+        }
+        
+        public void DeleteAllExternal(bool isRefresh=true)
         {
-            var list = UnifySDKAssetsSetting.GetUnifySDKAssetsSettings();
-            for (int i = 0; i < list.Length; i++)
+            for (int i = 0; i < _unifySDKAssetsSettings.Length; i++)
             {
-                DeleteInternalSDKAssets(list[i]);
+                DeleteSDKAssets(_unifySDKAssetsSettings[i],1,isRefresh:false);
             }
+            if (isRefresh)
+                AssetDatabase.Refresh();
         }
 
-        public static void DeleteInternalSDKAssets(UnifySDKAssetsSetting setting,bool clearConfigSetting=false)
+        // public static void DeleteExternalSDKAssets(UnifySDKAssetsSetting setting, bool clearConfigSetting = false)
+        // {
+        //     string externalPath = $"{ExternalRootPath}/{setting.name}";
+        //     if (Directory.Exists(externalPath))
+        //         Directory.Delete(externalPath);
+        //     if (clearConfigSetting)
+        //         setting.UnifySDKResPathInfos.Clear();
+        // }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="setting"></param>
+        /// <param name="type">0：删除内部  1：删除外部  2：删除内外部</param>
+        /// <param name="clearConfigSetting"></param>
+        /// <param name="isRefresh"></param>
+        public static void DeleteSDKAssets(UnifySDKAssetsSetting setting, int type = 2, bool clearConfigSetting = false,bool isRefresh=true)
         {
             foreach (var info in setting.UnifySDKResPathInfos)
             {
-                string sourcePath = $"{Application.dataPath}/{info.assetFolder}";
-                DirectoryInfo sourceDireInfo = new DirectoryInfo(sourcePath);
-                DeleteDire(sourceDireInfo.FullName);
+                if (string.IsNullOrEmpty(info.assetFolder) )
+                {
+                    UDebug.Sys.LogError($"{setting.name} 请检查资源路径 ， 包含空路径  ");
+                    continue;
+                }
+                string internalPath = Path.Combine(Application.dataPath,info.assetFolder);
+  
+                DirectoryInfo internalInfo = new DirectoryInfo(internalPath);
+        
+                if (type == 0 || type == 2)
+                    DeleteDire(internalInfo.FullName);
             }
+            string externalPath =Path.Combine(ExternalRootPath,setting.name);
+            DirectoryInfo externalDireInfo = new DirectoryInfo(externalPath);
+            if (type == 1 || type == 2)
+                DeleteDire(externalDireInfo.FullName);
             if (clearConfigSetting)
                 setting.UnifySDKResPathInfos.Clear();
+            if (isRefresh)
+            {
+                AssetDatabase.Refresh();
+            }
+            
         }
 
         /// <summary>
@@ -354,7 +481,8 @@ namespace UnifySDK.Editor {
         /// <param name="sourceDire">源文件夹全名</param>
         /// <param name="destDire">目标文件夹全名</param>
         /// <param name="backupsDire">备份文件夹全名</param>
-        public static void CopyDireToDire(string sourceDire, string destDire,bool isDelSource=false, string backupsDire = null)
+        public static void CopyDireToDire(string sourceDire, string destDire, bool isDelSource = false,
+            string backupsDire = null)
         {
             if (File.Exists(sourceDire))
             {
@@ -364,10 +492,10 @@ namespace UnifySDK.Editor {
                 File.Copy(sourceDire, destDire, true);
                 var sourceDireMeta = sourceDire + ".meta";
                 if (File.Exists(sourceDireMeta))
-                    File.Copy(sourceDireMeta, destDire+".meta", true);
+                    File.Copy(sourceDireMeta, destDire + ".meta", true);
                 if (isDelSource)
                 {
-                    File.Delete(sourceDire); 
+                    File.Delete(sourceDire);
                     if (File.Exists(sourceDireMeta))
                         File.Delete(sourceDireMeta);
                 }
@@ -387,12 +515,14 @@ namespace UnifySDK.Editor {
                     {
                         Directory.CreateDirectory(backupsDire);
                         string backFile = destFile.Replace(sourceDireInfo.FullName, backupsDire);
-                        File.Copy(destFile, backFile, true); 
+                        File.Copy(destFile, backFile, true);
                     }
+
                     File.Copy(sourceFile, destFile, true);
                     if (isDelSource)
                         File.Delete(sourceFile);
                 }
+
                 DirectoryInfo[] direInfos = sourceDireInfo.GetDirectories();
                 foreach (DirectoryInfo dInfo in direInfos)
                 {
@@ -403,12 +533,14 @@ namespace UnifySDK.Editor {
                     {
                         backupsDire2 = sourceDire2.Replace(sourceDireInfo.FullName, backupsDire);
                     }
+
                     Directory.CreateDirectory(destDire2);
-                    CopyDireToDire(sourceDire2, destDire2,isDelSource,backupsDire2);
+                    CopyDireToDire(sourceDire2, destDire2, isDelSource, backupsDire2);
                 }
+
                 var sourceDireMeta = sourceDire + ".meta";
                 if (File.Exists(sourceDireMeta))
-                    File.Copy(sourceDireMeta, destDire+".meta", true);
+                    File.Copy(sourceDireMeta, destDire + ".meta", true);
                 if (isDelSource)
                 {
                     Directory.Delete(sourceDire);
@@ -417,22 +549,29 @@ namespace UnifySDK.Editor {
                 }
             }
         }
-         /// <summary>
+
+        /// <summary>
         /// 删除一个文件夹或者文件 
         /// </summary>
         /// <param name="deleteDire">删除的文件夹全名</param>
         public static void DeleteDire(string deleteDire)
         {
+            if (Path.Equals(Path.GetFullPath(deleteDire),Path.GetFullPath(Application.dataPath)))
+            {
+                UDebug.Sys.LogError($"删除的文件路径是特殊路径{Application.dataPath}");
+                return;
+            }
             if (File.Exists(deleteDire))
-            {        
-                File.Delete(deleteDire); 
+            {
+                File.Delete(deleteDire);
                 var deleteDireMeta = deleteDire + ".meta";
                 if (File.Exists(deleteDireMeta))
                     File.Delete(deleteDireMeta);
             }
+
             if (Directory.Exists(deleteDire))
             {
-                Directory.Delete(deleteDire,true);
+                Directory.Delete(deleteDire, true);
                 var deleteDireMeta = deleteDire + ".meta";
                 if (File.Exists(deleteDireMeta))
                     File.Delete(deleteDireMeta);

@@ -26,23 +26,27 @@ namespace UnifySDK.Event
         public void UnifySDKInitEvent(object unifySDK)
         {
             var type = unifySDK.GetType();
-            PropertyInfo[] propertyInfos = type.GetProperties();
-            foreach (var property in propertyInfos)
+            var interfaceTypes = type.GetInterfaces();
+            foreach (var interfaceType in interfaceTypes)
             {
-                var attrs = property.GetCustomAttributes(true);
-                foreach (var attr in attrs)
+                PropertyInfo[] propertyInfos = interfaceType.GetProperties();
+                foreach (var property in propertyInfos)
                 {
-                    if (attr is UnifySDKEventAttribute)
+                    var attrs = property.GetCustomAttributes(true);
+                    foreach (var attr in attrs)
                     {
-                        Type genericType = (attr as UnifySDKEventAttribute).GetType();
-                        object obj = Activator.CreateInstance(genericType);
-                        IEvent iEvent =  obj as IEvent;
-                        property.SetValue(unifySDK,obj);
-                        if (allEvents.ContainsKey(iEvent.GetEventType()))
-                            allEvents[iEvent.GetEventType()].Add(iEvent);
-                        else
-                            allEvents.Add(iEvent.GetEventType(),new List<object>(){iEvent});
-                        break;
+                        if (attr is UnifySDKEventAttribute)
+                        {
+                            Type genericType = (attr as UnifySDKEventAttribute).GetType();
+                            object obj = Activator.CreateInstance(genericType);
+                            IEvent iEvent =  obj as IEvent;
+                            property.SetValue(unifySDK,obj);
+                            if (allEvents.ContainsKey(iEvent.GetEventType()))
+                                allEvents[iEvent.GetEventType()].Add(iEvent);
+                            else
+                                allEvents.Add(iEvent.GetEventType(),new List<object>(){iEvent});
+                            break;
+                        }
                     }
                 }
             }
@@ -60,7 +64,7 @@ namespace UnifySDK.Event
                 object obj = iEvents[i];
                 if (!(obj is AEvent<T> aEvent))
                 {
-                    UDebug.Sys.LogError($"event error: {obj.GetType().Name}");
+                    UDebug.Sys.LogError($"UnifySDKEventSystem Publish event error: {typeof(T).Name}");
                     continue;
                 }
                 aEvent.Handle(a);
