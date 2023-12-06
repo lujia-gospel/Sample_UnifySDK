@@ -10,16 +10,14 @@ public static class CommonLineTools
 	[MenuItem("Tools/UnifySDK/UnifyExtendGitReset", false, 0)]
 	public static void UnifyExtendGitReset()
 	{
-		var resetPath = $"{Application.dataPath}/Scripts/_UnifySDK/_UnifySDK.Extend";
-		CommandLineUtils.RunDirectly("git", $"checkout -- {resetPath}", Application.dataPath);
-		// 删除.meta文件夹
-		string metaFolderPath =  $"{Application.dataPath}/Plugins.meta";
-		if (Directory.Exists(metaFolderPath))
-		{
-			AssetDatabase.DeleteAsset(metaFolderPath);
-		}
 		// 删除文件夹及其中所有文件
 		Directory.Delete($"{Application.dataPath}/Plugins", true);
+		string metaFolderPath =  $"{Application.dataPath}/Plugins.meta";
+		// 删除.meta文件夹
+		if (File.Exists(metaFolderPath))
+			File.Delete(metaFolderPath);
+		var resetPath = $"{Application.dataPath}/Scripts/_UnifySDK/_UnifySDK.Extend";
+		CommandLineUtils.RunDirectly("git", $"checkout -- {resetPath}", Application.dataPath);
 		AssetDatabase.Refresh();
 	}
 	[MenuItem("Tools/UnifySDK/根据环境变量删除SDK", false, 0)]
