@@ -82,7 +82,6 @@ namespace UnifySDK
 #else
             // 将配置文件转化为对象
             environmentVariableSettings = Resources.Load<EnvironmentVariableSettings>("EnvironmentVariableSettings");
-            //environmentVariableSettings.OnAfterDeserialize();
 #endif
             return environmentVariableSettings;
         }
@@ -115,16 +114,14 @@ namespace UnifySDK
         /// <summary>Serialization override.</summary>
         public void OnBeforeSerialize()
         {
-            // Keys.Clear();
-            // Values.Clear();
-            //
-            // foreach (var kv in argumentsSDKSettings)
-            // {
-            //     UDebug.Logic.LogError($"   OnBeforeSerialize   Keys:  {kv.Key}  ");
-            //     UDebug.Logic.LogError($"   OnBeforeSerialize   Values:  {kv.Value}   ");
-            //     Keys.Add(kv.Key);
-            //     Values.Add(kv.Value);
-            // }
+            Keys.Clear();
+            Values.Clear();
+            
+            foreach (var kv in argumentsSDKSettings)
+            {
+                Keys.Add(kv.Key);
+                Values.Add(kv.Value);
+            }
         }
 
         /// <summary>Serialization override.</summary>
@@ -145,8 +142,6 @@ namespace UnifySDK
         public void UpdateDic(Dictionary<string, string> dic)
         {
             argumentsSDKSettings.Clear();
-            Keys.Clear();
-            Values.Clear();
             foreach (var kv in dic)
             {
                 SetSDKValue(kv.Key, kv.Value);
