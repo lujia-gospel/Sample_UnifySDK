@@ -13,6 +13,4 @@ MonoBehaviour:
   m_Name: DeviceOAID
   m_EditorClassIdentifier: 
   m_UnifySDKAssetInfos:
-  - assetFolder: 3rdPlugins/_UnifySDK/_UnifySDK.Extend/DeviceOAID
-  - assetFolder: Plugins/Android/libs/oaid_sdk_2.2.0.aar
-  - assetFolder: Plugins/Android/OAIDHelper.java
+  - assetFolder: Scripts/_UnifySDK/_UnifySDK.Extend/DeviceOAID

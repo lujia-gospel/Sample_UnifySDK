@@ -13,6 +13,4 @@ MonoBehaviour:
   m_Name: QuickSDK
   m_EditorClassIdentifier: 
   m_UnifySDKAssetInfos:
-  - assetFolder: 3rdPlugins/_UnifySDK/_UnifySDK.Extend/QuickSDK
-  - assetFolder: Plugins/Android/QuickSDK
-  - assetFolder: Plugins/IOS/QuickSDK
+  - assetFolder: Scripts/_UnifySDK/_UnifySDK.Extend/QuickSDK

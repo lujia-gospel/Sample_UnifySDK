@@ -12,13 +12,23 @@ public static class CommonLineTools
 	{
 		var resetPath = $"{Application.dataPath}/Scripts/_UnifySDK/_UnifySDK.Extend";
 		CommandLineUtils.RunDirectly("git", $"checkout -- {resetPath}", Application.dataPath);
+		// 删除.meta文件夹
+		string metaFolderPath =  $"{Application.dataPath}/Plugins.meta";
+		if (Directory.Exists(metaFolderPath))
+		{
+			AssetDatabase.DeleteAsset(metaFolderPath);
+		}
+		// 删除文件夹及其中所有文件
+		Directory.Delete($"{Application.dataPath}/Plugins", true);
+		AssetDatabase.Refresh();
 	}
 	[MenuItem("Tools/UnifySDK/根据环境变量删除SDK", false, 0)]
 	public static void UnifySDKBuild()
 	{
-		var py = "../Tools/UnifySDKTool/UnifySDKTool.py";
+		var py = $"{Application.dataPath}/../Tools/UnifySDKTool/UnifySDKTool.py";
 		var model = PlayerPrefs.GetString(EnvironmentVariableSettingsEditor.LocalUnifySDKRecord, "None");
-		CommandLineUtils.RunDirectly("Python 3", $"{py} {model}", Application.dataPath);
+		CommandLineUtils.RunDirectly("Python", $"{py} {model}", $"{Application.dataPath}/..");
+		AssetDatabase.Refresh();
 	}
 }
 

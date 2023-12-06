@@ -13,6 +13,4 @@ MonoBehaviour:
   m_Name: QuickGAT
   m_EditorClassIdentifier: 
   m_UnifySDKAssetInfos:
-  - assetFolder: 3rdPlugins/_UnifySDK/_UnifySDK.Extend/QuickGAT
-  - assetFolder: Plugins/Android/QuickGAT
-  - assetFolder: Plugins/iOS/QuickGAT
+  - assetFolder: Scripts/_UnifySDK/_UnifySDK.Extend/QuickGAT

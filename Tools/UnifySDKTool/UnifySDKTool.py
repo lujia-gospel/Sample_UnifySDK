@@ -78,10 +78,10 @@ def logic(args):
     for arg in args:
         print(f"UnifySDKTool SDK Logic {arg}")
 
-    SDKListTemplatePath = f"{UnityPath}/Assets/3rdPlugins/_UnifySDK/_UnifySDK.Runtime/Core/ConfigSetting/Resources/SDKListTemplate.txt"
+    SDKListTemplatePath = f"{UnityPath}/Assets/Scripts/_UnifySDK/_UnifySDK.Runtime/Core/ConfigSetting/Resources/SDKListTemplate.txt"
     print(f"SDKListTemplatePath: {SDKListTemplatePath}")
 
-    AssetConfigPaths = f"{UnityPath}/Assets/3rdPlugins/_UnifySDK/_UnifySDK.Editor/Editor/ConfigSetting/Resources"
+    AssetConfigPaths = f"{UnityPath}/Assets/Scripts/_UnifySDK/_UnifySDK.Editor/Editor/ConfigSetting/Resources"
     SDKListModel = None
     CustomSDKList = None
     if len(args) > 0:
@@ -90,8 +90,6 @@ def logic(args):
     if len(args) > 1:
         CustomSDKList = args[1]
         print(f"args[1]: {args[1]}")  
-
-    sdkModelName = "None"
     
     with open(SDKListTemplatePath, "r") as file:
         SDKListTemplate = file.read()

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: CrasheyeSDK
   m_EditorClassIdentifier: 
   m_UnifySDKAssetInfos:
-  - assetFolder: 3rdPlugins/_UnifySDK/_UnifySDK.Extend/CrasheyeSDK
+  - assetFolder: Scripts/_UnifySDK/_UnifySDK.Extend/CrasheyeSDK
   - assetFolder: Plugins/Android/CrasheyeSDK
   - assetFolder: Plugins/iOS/CrasheyeSDK
   - assetFolder: Plugins/CrasheyeSDK
