@@ -6,6 +6,15 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
-    guid: 99c9720ab356a0642a771bea13969a05
+    path: Assets/Scripts/_UnifySDK/_UnifySDK.Extend/QuickSDK/Demo/QuickDemoScene1.unity
+    guid: 8c223c77a5874154dbff3cae39c2f8f6
+  - enabled: 1
+    path: Assets/Scripts/_UnifySDK/_UnifySDK.Extend/QuickSDK/Demo/QuickDemoScene2.unity
+    guid: 52c59575996537c4d9900358234c34c0
+  - enabled: 1
+    path: Assets/Scripts/_UnifySDK/_UnifySDK.Extend/QuickSDK/Demo/QuickDemoScene3.unity
+    guid: eb821aaf7a33e544499eac16f6350e22
+  - enabled: 1
+    path: Assets/Scripts/_UnifySDK/_UnifySDK.Extend/QuickSDK/Demo/QuickDemoScene4.unity
+    guid: 5a22e064ddddf62439d81ab8032be5eb
   m_configObjects: {}
