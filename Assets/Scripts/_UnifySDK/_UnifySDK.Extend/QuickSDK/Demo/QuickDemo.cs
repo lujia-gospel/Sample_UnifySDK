@@ -19,11 +19,11 @@ public class QuickDemo : MonoBehaviour
         {
             mExitDialogCanvas.SetActive(false);
         }
-        if (UnifySDKManager.Instance.IUnifySDK == null)
-            StartGame();
-        else
-            UnifySDKManager.Instance.IUnifySDK.OnInitSuccess.AddOnceHandler((data, eventArgs) => {  StartGame();});
-        UnifySDKEventSystem.Instance.Publish(new InitSDKData(UnifySDKType.QuickSDK));
+        // if (UnifySDKManager.Instance.IUnifySDK == null)
+        //     StartGame();
+        // else
+        //     UnifySDKManager.Instance.IUnifySDK.OnInitSuccess.AddOnceHandler((data, eventArgs) => {  StartGame();});
+        // UnifySDKEventSystem.Instance.Publish(new InitSDKData(UnifySDKType.QuickSDK));
     }
     void StartGame( )
     {
