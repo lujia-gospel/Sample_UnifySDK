@@ -314,7 +314,7 @@ public class XCodeProjectMod
             // projectCapabilityManager.AddBackgroundModes(BackgroundModesOptions.BackgroundFetch );
             projectCapabilityManager.AddBackgroundModes(BackgroundModesOptions.RemoteNotifications);
 
-            projectCapabilityManager.AddPushNotifications(true);
+            //projectCapabilityManager.AddPushNotifications(true);
 
 
             if (!string.IsNullOrEmpty(

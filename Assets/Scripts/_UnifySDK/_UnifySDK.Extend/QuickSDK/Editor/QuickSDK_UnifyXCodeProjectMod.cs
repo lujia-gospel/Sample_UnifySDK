@@ -118,6 +118,7 @@ namespace UnifySDK
             var pedic = rootDict.CreateDict("App Transport Security Settings");
             pedic.SetString("Allow Arbitrary Loads", "YES");
             plist.WriteToFile(plistPath);
+            PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.iOS, "com.qmgame.mini4wd.iOS");
         }
 
         /// <summary>
@@ -198,7 +199,7 @@ namespace UnifySDK
             projectCapabilityManager.AddSignInWithApple();
             projectCapabilityManager.AddBackgroundModes(BackgroundModesOptions.RemoteNotifications);
 
-            projectCapabilityManager.AddPushNotifications(true);
+            // projectCapabilityManager.AddPushNotifications(true);
             string[] domains = {"applinks:fourwdtw.onelink.me", "applinks:www.fourwdtw.onelink.me"};
             projectCapabilityManager.AddAssociatedDomains(domains);
 
