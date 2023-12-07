@@ -2,6 +2,7 @@ using System.IO;
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
+using UnityEditor.XCodeEditor;
 using UnityEngine;
 
 namespace UnifySDK
@@ -28,13 +29,13 @@ namespace UnifySDK
 
         private static void EditorCode(string filePath)
         {
-            // //读取UnityAppController.mm文件
-            // var UnityAppController = new XClass(filePath + "/Classes/UnityAppController.mm");
-            // UnityAppController.WriteBelow("#include <sys/sysctl.h>", "#import \"QuickSDK_ios.h\"");
-            // UnityAppController.WriteBelow("#include <sys/sysctl.h>", "#import <SMPCQuickSDK/SMPCQuickSDK.h> ");
-            //
-            // UnityAppController.WriteBelow("[KeyboardDelegate Initialize];",
-            //     "[[QuickSDK_ios shareInstance] addNotifications];SMPCQuickSDKInitConfigure *cfg =[[SMPCQuickSDKInitConfigure alloc] init];cfg.productKey = @\"37359213\";cfg.productCode = @\"61942186438665891722635121162189\";int error = [[SMPCQuickSDK defaultInstance] initWithConfig:cfg application:application didFinishLaunchingWithOptions:launchOptions];if (error != 0){NSLog(@\"初始化失败：%d\",error);}");
+            //读取UnityAppController.mm文件
+            var UnityAppController = new XClass(filePath + "/Classes/UnityAppController.mm");
+            UnityAppController.WriteBelow("#include <sys/sysctl.h>", "#import \"QuickSDK_ios.h\"");
+            UnityAppController.WriteBelow("#include <sys/sysctl.h>", "#import <SMPCQuickSDK/SMPCQuickSDK.h> ");
+            
+            UnityAppController.WriteBelow("[KeyboardDelegate Initialize];",
+                "[[QuickSDK_ios shareInstance] addNotifications];SMPCQuickSDKInitConfigure *cfg =[[SMPCQuickSDKInitConfigure alloc] init];cfg.productKey = @\"37359213\";cfg.productCode = @\"61942186438665891722635121162189\";int error = [[SMPCQuickSDK defaultInstance] initWithConfig:cfg application:application didFinishLaunchingWithOptions:launchOptions];if (error != 0){NSLog(@\"初始化失败：%d\",error);}");
         }
 #endif
     }

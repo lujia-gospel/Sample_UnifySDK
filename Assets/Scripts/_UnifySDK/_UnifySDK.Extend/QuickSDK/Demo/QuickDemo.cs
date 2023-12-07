@@ -19,8 +19,16 @@ public class QuickDemo : MonoBehaviour
         {
             mExitDialogCanvas.SetActive(false);
         }
+        if (UnifySDKManager.Instance.IUnifySDK == null)
+            StartGame();
+        else
+            UnifySDKManager.Instance.IUnifySDK.OnInitSuccess.AddOnceHandler((data, eventArgs) => {  StartGame();});
+        UnifySDKEventSystem.Instance.Publish(new InitSDKData(UnifySDKType.QuickSDK));
     }
-
+    void StartGame( )
+    {
+        Debug.Log( "StartGame");
+    }
     void showLog(string title, string message)
     {
         Debug.Log("title: " + title + ", message: " + message);

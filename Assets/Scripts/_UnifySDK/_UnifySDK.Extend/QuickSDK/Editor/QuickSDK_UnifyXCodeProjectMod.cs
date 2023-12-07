@@ -31,10 +31,8 @@ namespace UnifySDK
 
             // 证书
             pbxProject.SetBuildProperty(targetGuid, "CODE_SIGN_IDENTITY", "iPhone Developer: Nan Xu (8MM8764MCJ)");
-            // pbxProject.SetBuildProperty(targetGuid, "CODE_SIGN_IDENTITY[sdk=iphoneos*]",
-            //     LaunchDiffParameters.ProvisioningProfileType == UnityEditor.ProvisioningProfileType.Distribution
-            //         ? "iPhone Distribution: Beijing Quark Molecular Network Technology Co., LTD (9QG859R5P2)"
-            //         : "iPhone Developer: Nan Xu (8MM8764MCJ)");
+            pbxProject.SetBuildProperty(targetGuid, "CODE_SIGN_IDENTITY[sdk=iphoneos*]",
+                 "iPhone Developer: Nan Xu (8MM8764MCJ)");
             pbxProject.SetBuildProperty(targetGuid, "PROVISIONING_PROFILE", "a10c98ae-d204-465e-86ed-3b50b56706d4");
             pbxProject.SetBuildProperty(targetGuid, "PROVISIONING_PROFILE_SPECIFIER", "qmgame_developer");
             pbxProject.SetTeamId(targetGuid, "9QG859R5P2");
@@ -58,7 +56,7 @@ namespace UnifySDK
             //         "Frameworks/JySDK.framework", PBXSourceTree.Source);
             // pbxProject.AddFileToEmbedFrameworks(targetFrameGuid, SMPCQuickSDK);
 
-            AddBundleFile("Frameworks/3rdPlugins/_UnifySDK/_UnifySDK.Extend/QuickSDK/Plugins/iOS/jywlRes.bundle", path,
+            AddBundleFile("Scripts/_UnifySDK/_UnifySDK.Extend/QuickSDK/Plugins/iOS/jywlRes.bundle", path,
                 pbxProject, targetGuid);
 
 

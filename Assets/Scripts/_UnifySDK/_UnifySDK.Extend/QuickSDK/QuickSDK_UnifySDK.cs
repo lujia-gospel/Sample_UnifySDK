@@ -38,7 +38,7 @@ namespace UnifySDK
             get => 100;
         }
 
-        public override bool AutoInit => false;
+        public override bool AutoInit => true;
 
         public QuickSDK_UnifySDK(QuickSDK_UnifySDKConfig config, UnifySDKType sdkType) : base(config, sdkType)
         {
