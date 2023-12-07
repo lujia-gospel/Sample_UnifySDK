@@ -55,10 +55,9 @@ namespace UnifySDK
             //     pbxProject.AddFile("Frameworks/Plugins/iOS/QuickSDK/JySDK.framework",
             //         "Frameworks/JySDK.framework", PBXSourceTree.Source);
             // pbxProject.AddFileToEmbedFrameworks(targetFrameGuid, SMPCQuickSDK);
-
-            AddBundleFile("Scripts/_UnifySDK/_UnifySDK.Extend/QuickSDK/Plugins/iOS/jywlRes.bundle", path,
+            
+            AddBundleFile("Frameworks/Plugins/iOS/jywlRes.bundle", path,
                 pbxProject, targetGuid);
-
 
             pbxProject.AddBuildProperty(targetGuid, "OTHER_LDFLAGS", "-ObjC");
             pbxProject.AddBuildProperty(targetFrameGuid, "OTHER_LDFLAGS", "-ObjC");
