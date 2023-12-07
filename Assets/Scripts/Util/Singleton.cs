@@ -15,7 +15,7 @@ public class Singleton<T> where T : new()
 }
 
 /// <summary>
-/// MonoMehaviour×é¼şÅÉÉúÀàµÄµ¥ÁĞ
+/// MonoMehaviourç»„ä»¶æ´¾ç”Ÿç±»çš„å•åˆ—
 /// </summary>
 /// <typeparam name="T">MonoBehaviour</typeparam>
 public class SingletonMonoBehaviour<T> : MonoBehaviour where T : MonoBehaviour
@@ -52,7 +52,7 @@ public class SingletonMonoBehaviour<T> : MonoBehaviour where T : MonoBehaviour
 
 
     /// <summary>
-    /// Ïú»Ù
+    /// é”€æ¯
     /// </summary>
     public static void Destroy()
     {

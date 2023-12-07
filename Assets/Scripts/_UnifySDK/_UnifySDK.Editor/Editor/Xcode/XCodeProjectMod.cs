@@ -7,10 +7,10 @@ using UnityEditor.iOS.Xcode.Extensions;
 using UnifySDK;
 using UnityEngine;
 
-
+#if UNITY_IPHONE
 public class XCodeProjectMod
 {
-#if UNITY_IPHONE
+
     [UnityEditor.Callbacks.PostProcessBuild(999)]
     public static void OnPostprocessBuild(BuildTarget BuildTarget, string path)
     {
