@@ -11,7 +11,9 @@ public static class CommonLineTools
 	public static void UnifyExtendGitReset()
 	{
 		// 删除文件夹及其中所有文件
-		Directory.Delete($"{Application.dataPath}/Plugins", true);
+		string folderPath = $"{Application.dataPath}/Plugins";
+		if (Directory.Exists(folderPath))
+			Directory.Delete(folderPath, true);
 		string metaFolderPath =  $"{Application.dataPath}/Plugins.meta";
 		// 删除.meta文件夹
 		if (File.Exists(metaFolderPath))
