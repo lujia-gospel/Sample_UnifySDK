@@ -8,15 +8,16 @@ using UnityEngine;
 namespace UnifySDK.Editor
 {
     [CustomEditor(typeof(EnvironmentVariableSettings))]
-    public class EnvironmentVariableSettingsEditor :UnityEditor.Editor
+    public class EnvironmentVariableSettingsEditor : UnityEditor.Editor
     {
-        public const string LocalUnifySDKRecord="LocalUnifySDKRecord";
-        
-        private EnvironmentVariableSettings settings; 
-        private Dictionary<string,string []> configInfoDict; 
+        public const string LocalUnifySDKRecord = "LocalUnifySDKRecord";
+
+        private EnvironmentVariableSettings settings;
+        private Dictionary<string, string[]> configInfoDict;
         private string[] eventNameArr;
         private int selectIndex;
         private string[] canAddEventNameArr;
+
         public void OnEnable()
         {
             settings = target as EnvironmentVariableSettings;
@@ -28,7 +29,7 @@ namespace UnifySDK.Editor
 
         public void OnDisable()
         {
-            if (PlayerPrefs.GetString(LocalUnifySDKRecord,"None")!=templateArr[templateIndex])
+            if (PlayerPrefs.GetString(LocalUnifySDKRecord, "None") != templateArr[templateIndex])
                 SaveTemplate(templateArr[templateIndex]);
             AssetDatabase.SaveAssetIfDirty(target);
         }
@@ -36,11 +37,12 @@ namespace UnifySDK.Editor
         private void UpdateCanAddEventNameArr()
         {
             var unifySDKTypes = Enum.GetValues(typeof(UnifySDKType)).Cast<UnifySDKType>().Select(e => e.ToString());
-            var unifyCustomPlugins = Enum.GetValues(typeof(UnifyCustomPlugin)).Cast<UnifyCustomPlugin>().Select(e => e.ToString());
+            var unifyCustomPlugins = Enum.GetValues(typeof(UnifyCustomPlugin)).Cast<UnifyCustomPlugin>()
+                .Select(e => e.ToString());
 
             var allTypes = unifySDKTypes.Concat(unifyCustomPlugins).Distinct().Where(type => type != "All").ToArray();
-            
-    
+
+
             var canAddList = new List<string>();
             foreach (var eventName in allTypes)
             {
@@ -48,18 +50,21 @@ namespace UnifySDK.Editor
                 {
                     configInfoDict[eventName] = new[] { "Unique" };
                 }
+
                 if (!settings.Keys.Contains(eventName))
                 {
                     canAddList.Add(eventName);
                 }
             }
+
             canAddEventNameArr = canAddList.ToArray();
         }
 
         private string sdkConfigName;
         private bool _showDictionary = true;
-        private string _statusStr = "要打进包的SDK列表";    
-        bool isChange ;
+        private string _statusStr = "要打进包的SDK列表";
+        bool isChange;
+
         public override void OnInspectorGUI()
         {
             isChange = false;
@@ -69,34 +74,46 @@ namespace UnifySDK.Editor
             TemplateOnGUI();
             _showDictionary = EditorGUILayout.BeginFoldoutHeaderGroup(_showDictionary, _statusStr);
             if (_showDictionary)
-            { 
+            {
                 GUILayout.BeginHorizontal();
-                GUILayout.Label("SDK名",GUILayout.Width(150.0f));
-                GUILayout.Label("对应的配置表",GUILayout.ExpandWidth(false)); 
+                GUILayout.Label("SDK名", GUILayout.Width(150.0f));
+                GUILayout.Label("对应的配置表", GUILayout.ExpandWidth(false));
                 GUILayout.EndHorizontal();
                 for (int i = 0; i < settings.Keys.Count; i++)
                 {
                     GUILayout.BeginHorizontal();
-         
-                    GUILayout.TextField(settings.Keys[i],GUILayout.Width(150.0f));
+
+                    GUILayout.TextField(settings.Keys[i], GUILayout.Width(150.0f));
 
                     if (configInfoDict.ContainsKey(settings.Keys[i]))
                     {
                         var configValues = configInfoDict[settings.Keys[i]];
-                        int tempIndex  = Array.IndexOf(configValues,settings.Values[i]);
+                        int tempIndex = Array.IndexOf(configValues, settings.Values[i]);
+                        
+                        if (tempIndex == -1)
+                        {
+                           GUIStyle redTextStyle = new GUIStyle(GUI.skin.label);
+                           redTextStyle.normal.textColor = Color.yellow;
+                            // Display error with tooltip on hover
+                            string errorMessage = $"error: {settings.Values[i]}";
+                            string tooltipMessage =
+                                $"The sdk may be removed or the corresponding value({settings.Values[i]}) may be deleted.\n该sdk可能被被移除了，或者对应的value值被移除了";
+                            GUILayout.Label(new GUIContent(errorMessage, tooltipMessage),redTextStyle);
+                        }
                         var tempIndex2 = EditorGUILayout.Popup(tempIndex, configValues);
-                        if (tempIndex==-1)
-                            GUILayout.TextField($"error:{settings.Values[i]}");
-                        if (tempIndex2!=tempIndex)
+                        if (tempIndex2 != tempIndex)
                         {
                             isChange = true;
-                            settings.SetSDKValue(settings.Keys[i],configValues[tempIndex2]);
+                            settings.SetSDKValue(settings.Keys[i], configValues[tempIndex2]);
                             EditorUtility.SetDirty(target);
                         }
                     }
                     else
                     {
-                        GUILayout.TextField($"error:{settings.Values[i]}");
+                         GUIStyle redTextStyle = new GUIStyle(GUI.skin.label);
+                           redTextStyle.normal.textColor = Color.red;
+                        GUILayout.Label(new GUIContent($"error: {settings.Values[i]}",
+                            $"The UnifySDKType enumeration or the UnifyCustomPlugin enumeration does not contain {settings.Keys[i]}.\nUnifySDKType枚举或UnifyCustomPlugin枚举不包含{settings.Keys[i]}"),redTextStyle);
                     }
 
                     if (GUILayout.Button("DeleteSDK", GUILayout.MinWidth(60.0f), GUILayout.MaxWidth(100.0f)))
@@ -106,9 +123,10 @@ namespace UnifySDK.Editor
                         UpdateCanAddEventNameArr();
                         EditorUtility.SetDirty(target);
                     }
+
                     GUILayout.EndHorizontal();
-                } 
-                
+                }
+
                 GUILayout.Space(10);
                 if (canAddEventNameArr.Length == 0)
                 {
@@ -117,76 +135,63 @@ namespace UnifySDK.Editor
                         SaveTemplate(templateArr[templateIndex]);
                         AnalysisTemplate();
                     }
+
                     AssetDatabase.SaveAssetIfDirty(target);
                     return;
                 }
+
                 GUILayout.BeginHorizontal();
                 UpdateCanAddEventNameArr();
                 //GUILayout.Width(.width), GUILayout.Height(70);
-                if (selectIndex>canAddEventNameArr.Length-1)
+                if (selectIndex > canAddEventNameArr.Length - 1)
                     selectIndex = 0;
                 int index = selectIndex;
-                GUILayout.Label("可添加的SDK：",GUILayout.ExpandWidth(false));
+                GUILayout.Label("可添加的SDK：", GUILayout.ExpandWidth(false));
                 //首先获取枚举中的所有名字数组，通过 Popup将数组显示为下拉框，返回选中的项
                 selectIndex = EditorGUILayout.Popup(index, canAddEventNameArr);
                 //sdkConfigName =  GUILayout.TextField(sdkConfigName,GUILayout.MinWidth( 150.0f));
-               
-                if (GUILayout.Button("AddSDK",GUILayout.MinWidth(60.0f),GUILayout.MaxWidth(100.0f)))
+
+                if (GUILayout.Button("AddSDK", GUILayout.MinWidth(60.0f), GUILayout.MaxWidth(100.0f)))
                 {
-                    // if (string.IsNullOrEmpty(sdkConfigName))
-                    // {
-                    //     EditorUtility.DisplayDialog("AddSDK提示","请填写SDK拥有的配置表名", "确定"); 
-                    // }
-                    // else
                     {
-                        // string strTip = $"是否添加该SDK{canAddEventNameArr[selectIndex]},请确保该SDK的拥有该{sdkConfigName}配置表";
-                        // if (EditorUtility.DisplayDialog("AddSDK提示", strTip, "确定", "取消"))
-                        {
-                            
-                            settings.SetSDKValue(canAddEventNameArr[selectIndex],configInfoDict[canAddEventNameArr[selectIndex]][0]);
-                            selectIndex = selectIndex>0? selectIndex--: selectIndex;
-                            sdkConfigName = "";
-                            isChange = true;
-                            EditorUtility.SetDirty(target);
-                        }
+                        settings.SetSDKValue(canAddEventNameArr[selectIndex],
+                            configInfoDict[canAddEventNameArr[selectIndex]][0]);
+                        selectIndex = selectIndex > 0 ? selectIndex-- : selectIndex;
+                        sdkConfigName = "";
+                        isChange = true;
+                        EditorUtility.SetDirty(target);
                     }
                 }
+
                 GUILayout.EndHorizontal();
             }
+
             GUILayout.EndVertical();
-            
+
             if (isChange)
             {
                 SaveTemplate(templateArr[templateIndex]);
                 AnalysisTemplate();
             }
-            
-            //AssetDatabase.SaveAssetIfDirty(target);
-         
         }
-        
+
         private int templateIndex;
         private string[] templateArr;
         private string templateName;
         private Dictionary<string, Dictionary<string, string>> templateDic;
+
         private void AnalysisTemplate()
         {
-            templateDic=new Dictionary<string, Dictionary<string, string>>();
-            //var settingsDic = settings.GetDic();
-            // templateDic["None"] = new  Dictionary<string, string>();  
-            // foreach (var kv in settingsDic)
-            // {
-            //     templateDic["None"].Add(kv.Key,kv.Value);
-            // }
-            string sdkModel = PlayerPrefs.GetString(LocalUnifySDKRecord,"None");
-           
+            templateDic = new Dictionary<string, Dictionary<string, string>>();
+            string sdkModel = PlayerPrefs.GetString(LocalUnifySDKRecord, "None");
+
             var temp = Tools.ReadFileString($"{EnvironmentVariableSettings.SavePath}/SDKListTemplate.txt");
             try
             {
-                var cache= LitJson.JsonMapper.ToObject<Dictionary<string, Dictionary<string, string>>>(temp);
+                var cache = LitJson.JsonMapper.ToObject<Dictionary<string, Dictionary<string, string>>>(temp);
                 foreach (var kv in cache)
                 {
-                    templateDic.Add(kv.Key,kv.Value);
+                    templateDic.Add(kv.Key, kv.Value);
                 }
             }
             catch (Exception e)
@@ -199,12 +204,13 @@ namespace UnifySDK.Editor
                 templateArr = templateDic.Keys.ToArray();
                 for (int i = 0; i < templateArr.Length; i++)
                 {
-                    if (sdkModel==templateArr[i])
+                    if (sdkModel == templateArr[i])
                     {
                         templateIndex = i;
                         break;
                     }
                 }
+
                 settings.UpdateDic(templateDic[templateArr[templateIndex]]);
             }
         }
@@ -214,31 +220,33 @@ namespace UnifySDK.Editor
             templateDic[name] = settings.GetDic();
             if (!templateArr.Contains(name))
             {
-                templateArr = templateArr.Concat(new []{name}).ToArray();
-                templateIndex = templateArr.Length-1;
+                templateArr = templateArr.Concat(new[] { name }).ToArray();
+                templateIndex = templateArr.Length - 1;
             }
-            PlayerPrefs.SetString(LocalUnifySDKRecord,name);
+
+            PlayerPrefs.SetString(LocalUnifySDKRecord, name);
             var saveStr = LitJson.JsonMapper.ToJson(templateDic);
-            Tools.WriteFileString($"{EnvironmentVariableSettings.SavePath}/SDKListTemplate.txt",saveStr);
+            Tools.WriteFileString($"{EnvironmentVariableSettings.SavePath}/SDKListTemplate.txt", saveStr);
             AssetDatabase.Refresh();
         }
 
         private void TemplateOnGUI()
         {
             GUILayout.BeginHorizontal();
-            GUILayout.Label("SDK列表模板：",GUILayout.ExpandWidth(false));
-          
+            GUILayout.Label("SDK列表模板：", GUILayout.ExpandWidth(false));
+
             int index = templateIndex;
             //首先获取枚举中的所有名字数组，通过 Popup将数组显示为下拉框，返回选中的项
             templateIndex = EditorGUILayout.Popup(index, templateArr);
-            if (templateIndex!=index)
+            if (templateIndex != index)
             {
                 settings.UpdateDic(templateDic[templateArr[templateIndex]]);
                 EditorUtility.SetDirty(target);
             }
+
             if (templateArr[templateIndex] == "None")
             {
-                templateName = GUILayout.TextField(templateName,GUILayout.MinWidth( 150.0f));
+                templateName = GUILayout.TextField(templateName, GUILayout.MinWidth(150.0f));
             }
 
             if (templateArr[templateIndex] == "None")
@@ -258,36 +266,37 @@ namespace UnifySDK.Editor
                     {
                         SaveTemplate(templateName);
                     }
+
                     AnalysisTemplate();
                 }
             }
-           
 
-            if ( templateArr[templateIndex]!="None" )
+
+            if (templateArr[templateIndex] != "None")
             {
                 if (GUILayout.Button("删除SDK模板", GUILayout.MinWidth(80.0f), GUILayout.MaxWidth(100.0f)))
                 {
                     templateDic.Remove(templateArr[templateIndex]);
                     var saveStr = LitJson.JsonMapper.ToJson(templateDic);
-                    Tools.WriteFileString($"{EnvironmentVariableSettings.SavePath}/SDKListTemplate.txt",saveStr);
+                    Tools.WriteFileString($"{EnvironmentVariableSettings.SavePath}/SDKListTemplate.txt", saveStr);
                     AnalysisTemplate();
-                    //AssetDatabase.Refresh();
                 }
             }
+
             GUILayout.EndHorizontal();
         }
-        
-        public static Dictionary<string,string[]> GetUnifySDKConfigInfoDict()
+
+        public static Dictionary<string, string[]> GetUnifySDKConfigInfoDict()
         {
-            Dictionary<string,string[]> dict=new ();
-            var list= Tools.GetTypesByBaseClass<BaseUnifySDKConfig>();
+            Dictionary<string, string[]> dict = new();
+            var list = Tools.GetTypesByBaseClass<BaseUnifySDKConfig>();
             foreach (var kv in list)
             {
-                var sdk = kv.GetType().Name.Replace("_UnifySDKConfig",string.Empty);
+                var sdk = kv.GetType().Name.Replace("_UnifySDKConfig", string.Empty);
                 dict[sdk] = kv.GetTargetPlatforms();
             }
+
             return dict;
         }
     }
 }
-
