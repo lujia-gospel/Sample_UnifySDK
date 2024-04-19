@@ -29,7 +29,11 @@ namespace UnifySDK
             SDKType = type;
             Config = t;
             IsInit = false;
-            UnifySDKEventSystem.Instance.UnifySDKInitEvent(this);
+#if UNITY_EDITOR
+            if (!EnvironmentVariableSettings.Instance.Keys.Contains(SDKType.ToString()))
+                return;
+#endif
+            UnifySDKEventSystem.Instance.UnifySDKInitEvent(SDKType,this);
             OnInitData.Handler += (data, eventArgs) =>
             {
                 if ( ((InitSDKData)data).InitSDKs.Contains(SDKType) && IsInit == false)

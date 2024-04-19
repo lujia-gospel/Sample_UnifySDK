@@ -16,10 +16,8 @@ MonoBehaviour:
   AssetBundleMode: 0
   UITemplateMode: 0
   Keys:
-  - Channel_China
-  - QuickSDK
-  - CrasheyeSDK
+  - QuickGAT
+  - DeviceOAID
   Values:
-  - IOS_Default
-  - IOS_Default
-  - IOS_Default
+  - Android_Default
+  - Unique

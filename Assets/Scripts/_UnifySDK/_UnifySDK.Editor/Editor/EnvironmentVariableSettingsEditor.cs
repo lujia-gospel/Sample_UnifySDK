@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
@@ -11,13 +12,15 @@ namespace UnifySDK.Editor
     {
         public const string LocalUnifySDKRecord="LocalUnifySDKRecord";
         
-        private EnvironmentVariableSettings settings;
+        private EnvironmentVariableSettings settings; 
+        private Dictionary<string,string []> configInfoDict; 
         private string[] eventNameArr;
         private int selectIndex;
         private string[] canAddEventNameArr;
         public void OnEnable()
         {
             settings = target as EnvironmentVariableSettings;
+            configInfoDict = GetUnifySDKConfigInfoDict();
             UpdateCanAddEventNameArr();
             templateName = string.Empty;
             AnalysisTemplate();
@@ -25,7 +28,6 @@ namespace UnifySDK.Editor
 
         public void OnDisable()
         {
-            //settings.UpdateDic(templateDic["None"]);
             if (PlayerPrefs.GetString(LocalUnifySDKRecord,"None")!=templateArr[templateIndex])
                 SaveTemplate(templateArr[templateIndex]);
             AssetDatabase.SaveAssetIfDirty(target);
@@ -33,15 +35,22 @@ namespace UnifySDK.Editor
 
         private void UpdateCanAddEventNameArr()
         {
-            var unifySDKAssetsSettings = UnifySDKAssetsSetting.GetUnifySDKAssetsSettings();
-            eventNameArr = new String [unifySDKAssetsSettings.Length];
-            List<string> canAddList = new List<string>();
-            for (int i = 0; i < unifySDKAssetsSettings.Length; i++)
+            var unifySDKTypes = Enum.GetValues(typeof(UnifySDKType)).Cast<UnifySDKType>().Select(e => e.ToString());
+            var unifyCustomPlugins = Enum.GetValues(typeof(UnifyCustomPlugin)).Cast<UnifyCustomPlugin>().Select(e => e.ToString());
+
+            var allTypes = unifySDKTypes.Concat(unifyCustomPlugins).Distinct().Where(type => type != "All").ToArray();
+            
+    
+            var canAddList = new List<string>();
+            foreach (var eventName in allTypes)
             {
-                eventNameArr[i] = unifySDKAssetsSettings[i].name;
-                if (!settings.Keys.Contains(eventNameArr[i]))
+                if (!configInfoDict.ContainsKey(eventName))
                 {
-                    canAddList.Add(eventNameArr[i]);
+                    configInfoDict[eventName] = new[] { "Unique" };
+                }
+                if (!settings.Keys.Contains(eventName))
+                {
+                    canAddList.Add(eventName);
                 }
             }
             canAddEventNameArr = canAddList.ToArray();
@@ -70,14 +79,26 @@ namespace UnifySDK.Editor
                     GUILayout.BeginHorizontal();
          
                     GUILayout.TextField(settings.Keys[i],GUILayout.Width(150.0f));
-              
-                    var v= GUILayout.TextField(settings.Values[i]);
-                    if (v!=settings.Values[i])
+
+                    if (configInfoDict.ContainsKey(settings.Keys[i]))
                     {
-                        isChange = true;
-                        settings.SetSDKValue(settings.Keys[i],v);
-                        EditorUtility.SetDirty(target);
+                        var configValues = configInfoDict[settings.Keys[i]];
+                        int tempIndex  = Array.IndexOf(configValues,settings.Values[i]);
+                        var tempIndex2 = EditorGUILayout.Popup(tempIndex, configValues);
+                        if (tempIndex==-1)
+                            GUILayout.TextField($"error:{settings.Values[i]}");
+                        if (tempIndex2!=tempIndex)
+                        {
+                            isChange = true;
+                            settings.SetSDKValue(settings.Keys[i],configValues[tempIndex2]);
+                            EditorUtility.SetDirty(target);
+                        }
                     }
+                    else
+                    {
+                        GUILayout.TextField($"error:{settings.Values[i]}");
+                    }
+
                     if (GUILayout.Button("DeleteSDK", GUILayout.MinWidth(60.0f), GUILayout.MaxWidth(100.0f)))
                     {
                         isChange = true;
@@ -108,20 +129,21 @@ namespace UnifySDK.Editor
                 GUILayout.Label("可添加的SDK：",GUILayout.ExpandWidth(false));
                 //首先获取枚举中的所有名字数组，通过 Popup将数组显示为下拉框，返回选中的项
                 selectIndex = EditorGUILayout.Popup(index, canAddEventNameArr);
-                sdkConfigName =  GUILayout.TextField(sdkConfigName,GUILayout.MinWidth( 150.0f));
+                //sdkConfigName =  GUILayout.TextField(sdkConfigName,GUILayout.MinWidth( 150.0f));
                
                 if (GUILayout.Button("AddSDK",GUILayout.MinWidth(60.0f),GUILayout.MaxWidth(100.0f)))
                 {
-                    if (string.IsNullOrEmpty(sdkConfigName))
+                    // if (string.IsNullOrEmpty(sdkConfigName))
+                    // {
+                    //     EditorUtility.DisplayDialog("AddSDK提示","请填写SDK拥有的配置表名", "确定"); 
+                    // }
+                    // else
                     {
-                        EditorUtility.DisplayDialog("AddSDK提示","请填写SDK拥有的配置表名", "确定"); 
-                    }
-                    else
-                    {
-                        string strTip = $"是否添加该SDK{canAddEventNameArr[selectIndex]},请确保该SDK的拥有该{sdkConfigName}配置表";
-                        if (EditorUtility.DisplayDialog("AddSDK提示", strTip, "确定", "取消"))
+                        // string strTip = $"是否添加该SDK{canAddEventNameArr[selectIndex]},请确保该SDK的拥有该{sdkConfigName}配置表";
+                        // if (EditorUtility.DisplayDialog("AddSDK提示", strTip, "确定", "取消"))
                         {
-                            settings.SetSDKValue(canAddEventNameArr[selectIndex],sdkConfigName);
+                            
+                            settings.SetSDKValue(canAddEventNameArr[selectIndex],configInfoDict[canAddEventNameArr[selectIndex]][0]);
                             selectIndex = selectIndex>0? selectIndex--: selectIndex;
                             sdkConfigName = "";
                             isChange = true;
@@ -253,6 +275,18 @@ namespace UnifySDK.Editor
                 }
             }
             GUILayout.EndHorizontal();
+        }
+        
+        public static Dictionary<string,string[]> GetUnifySDKConfigInfoDict()
+        {
+            Dictionary<string,string[]> dict=new ();
+            var list= Tools.GetTypesByBaseClass<BaseUnifySDKConfig>();
+            foreach (var kv in list)
+            {
+                var sdk = kv.GetType().Name.Replace("_UnifySDKConfig",string.Empty);
+                dict[sdk] = kv.GetTargetPlatforms();
+            }
+            return dict;
         }
     }
 }

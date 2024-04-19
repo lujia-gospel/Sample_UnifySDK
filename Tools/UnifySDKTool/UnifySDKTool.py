@@ -12,31 +12,24 @@ root_path = os.path.abspath(os.path.dirname(__file__))
 UnityPath = root_path.replace("\\Tools\\UnifySDKTool", "")
 UnityPath = UnityPath.replace("/Tools/UnifySDKTool", "")
 UnityDataPath = os.path.join(UnityPath, "Assets")
-ExternalRootPath = os.path.join(UnityPath, "Tools/SdkFrame")
+UnfiyRootPath = os.path.join(UnityDataPath, "Scripts/_UnifySDK")
+ExternalRootPath = os.path.join(UnityDataPath, "Scripts/_UnifySDK/_UnifySDK.Extend")
+
 print("root_path:"+root_path)
 print("UnityPath:"+UnityPath)
 print("UnityDataPath:"+UnityDataPath)
 print("ExternalRootPath:"+ExternalRootPath)
 
-def write_file_string(path, data):
-    p = os.path.dirname(path)
-    if not os.path.exists(p):
-        os.makedirs(p,True)
-    with open(path, 'w', encoding='utf-8') as file:
-        file.write(data)
+def plugins_move_to_project(file_name):
+    source_path = f"{ExternalRootPath}/{file_name}/Plugins"
+    # 检查源路径是否存在
+    if not os.path.exists(source_path):
+        print(f"源路径不存在: {source_path}")
+        return  # 如果源路径不存在，直接返回并不执行后续逻辑
 
-def read_file_string(path):
-    if os.path.exists(path):
-        with open(path, 'r', encoding='utf-8') as file:
-            return file.read()
-    return ''
-
-def plugins_move_to_project(file_name, path):
-    source_path = f"{UnityDataPath}/{path}/Plugins" 
-    target_path = f"{UnityDataPath}/Plugins"  
+    target_path = f"{UnityDataPath}/Plugins"
     source_dire_info = os.path.abspath(source_path)
     dest_dire = os.path.abspath(target_path)
-    #print(f"  CopyDireToDire  sourcePath: {source_path} targetPath: {target_path}  ")
     print(f"  CopyDireToDire  sourceDireInfo: {source_dire_info} destDire: {dest_dire}  ")
     merge_folders(source_dire_info, dest_dire)
 
@@ -74,22 +67,38 @@ def delete_dire_fun(delete_dire):
         if os.path.isfile(delete_dire_meta):
             os.remove(delete_dire_meta)
 
+def delete_unneeded_directories_and_meta(parent_directory, needSDKList):
+    """
+    删除parent_directory下不在needSDKList中的所有子目录及其对应的.meta文件。
+    :param parent_directory: 要遍历的父目录路径
+    :param needSDKList: 包含需要保留的子目录名称的列表
+    """
+    # 获取parent_directory下的所有子目录
+    subdirectories = [d for d in os.listdir(parent_directory) if os.path.isdir(os.path.join(parent_directory, d))]
+
+    for subdir in subdirectories:
+        # 如果子目录名称不在needSDKList中，则删除该子目录及其对应的.meta文件
+        if subdir not in needSDKList:
+            full_path = os.path.join(parent_directory, subdir)
+            meta_path = f"{full_path}.meta"  # 构造.meta文件的路径
+
+            shutil.rmtree(full_path)  # 删除子目录
+            print(f"已删除目录: {full_path}")
+
+            if os.path.exists(meta_path):  # 检查对应的.meta文件是否存在
+                os.remove(meta_path)  # 删除.meta文件
+                print(f"已删除.meta文件: {meta_path}")
+
 def logic(args):
     for arg in args:
         print(f"UnifySDKTool SDK Logic {arg}")
 
-    SDKListTemplatePath = f"{UnityPath}/Assets/Scripts/_UnifySDK/_UnifySDK.Runtime/Core/ConfigSetting/Resources/SDKListTemplate.txt"
+    SDKListTemplatePath = os.path.join(UnfiyRootPath,"_UnifySDK.Runtime/Core/ConfigSetting/Resources/SDKListTemplate.txt")
     print(f"SDKListTemplatePath: {SDKListTemplatePath}")
-
-    AssetConfigPaths = f"{UnityPath}/Assets/Scripts/_UnifySDK/_UnifySDK.Editor/Editor/ConfigSetting/Resources"
     SDKListModel = None
-    CustomSDKList = None
     if len(args) > 0:
         SDKListModel = args[0]
-        print(f"args[0]: {args[0]}")  
-    if len(args) > 1:
-        CustomSDKList = args[1]
-        print(f"args[1]: {args[1]}")  
+        print(f"args[0]（Jenkins SDKListModel）: {args[0]}") 
     
     with open(SDKListTemplatePath, "r") as file:
         SDKListTemplate = file.read()
@@ -101,37 +110,13 @@ def logic(args):
     elif SDKListModel in sdkModelDic:
         needSDKList = sdkModelDic[SDKListModel].keys()
 
-    assetConfigFiles = [file for file in os.listdir(AssetConfigPaths) if file.endswith(".asset")]
+    subdirectories = delete_unneeded_directories_and_meta(ExternalRootPath,needSDKList)
+    print("子目录列表:", subdirectories)
 
-    for file in assetConfigFiles:
-        filePath = os.path.join(AssetConfigPaths, file)
-        sdkName,_ = os.path.splitext(file)
-        if sdkName not in needSDKList:
-        
-            with open(filePath, "r") as assetFile:
-                assetConfig = assetFile.read()
-            
-            list = assetConfig.split("  - assetFolder: ")[1:]
-		      
-            for item in list:
-                item = item.replace("\n", "").replace("\r", "")
-                targetPath = os.path.join(UnityDataPath, item)
-                delete_dire_fun(targetPath)
     delet_path = f"{UnityDataPath}/Plugins" 
     delete_plugins_folder(delet_path)
-    for file in assetConfigFiles:
-        sdkName,_ = os.path.splitext(file)
-
-        if sdkName in needSDKList:
-            filePath = os.path.join(AssetConfigPaths, file)
-            with open(filePath, "r") as assetFile:
-                assetConfig = assetFile.read()
-
-            list = assetConfig.split("  - assetFolder: ")[1:]
-
-            for item in list:
-                item = item.replace("\n", "").replace("\r", "")
-                plugins_move_to_project(sdkName, item)
+    for sdkName in needSDKList:
+        plugins_move_to_project(sdkName)
 
 def main(args):
     if len(args) > 0:
