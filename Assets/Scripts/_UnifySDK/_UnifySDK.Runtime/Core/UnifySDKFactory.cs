@@ -13,7 +13,12 @@ namespace UnifySDK
             {
                 try
                 {
-                    unifySDKs.Add(factory.Create()); 
+                    var unfiySdk =  factory.Create();
+#if UNITY_EDITOR
+                    if (!EnvironmentVariableSettings.Instance.Keys.Contains(unfiySdk.SDKType.ToString()))
+                        continue;
+#endif
+                    unifySDKs.Add(unfiySdk);
                 }
                 catch (Exception e)
                 {

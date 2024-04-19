@@ -26,11 +26,11 @@ namespace UnifySDK.Editor
                     break;
                 case SerializedPropertyType.Enum:
                     if (property.enumValueIndex < 0)
-                        label.text = "None";
+                        label.text = "error:None";
                     else if (property.enumValueIndex < customHeader.Headlines.Length )
                         label.text = customHeader.Headlines[property.enumValueIndex];
                     else if (customHeader.Headlines.Length > 0)
-                        label.text = $"枚举提示数量不足";
+                        label.text = $"error:枚举提示数量不足";
                     break;
                 default:
                     if (customHeader.Headlines.Length > 0)

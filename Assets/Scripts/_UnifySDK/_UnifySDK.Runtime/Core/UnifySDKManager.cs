@@ -5,15 +5,23 @@ using UnityEngine;
 
 namespace UnifySDK
 {
+    [Flags]
     public enum UnifySDKType
     {
-        QuickSDK,
-        DeviceOAID,
-        ReYunSDK,
-        CrasheyeSDK,
-        UltraSDK,
-        QuickGAT,
-        Adjust,
+        All = 0,
+        QuickSDK=1<<0,
+        DeviceOAID=1<<1,
+        ReYunSDK=1<<2,
+        CrasheyeSDK=1<<3,
+        UltraSDK=1<<4,
+        QuickGAT=1<<5,
+        Adjust=1<<6,
+    }
+
+    public enum UnifyCustomPlugin
+    {
+        Channel_China,
+        Channel_ChinaSelf
     }
 
     public partial class UnifySDKManager 

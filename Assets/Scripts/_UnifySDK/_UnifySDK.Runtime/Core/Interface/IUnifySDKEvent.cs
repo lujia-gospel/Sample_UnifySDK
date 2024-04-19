@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using UnityEngine;
-using Object = System.Object;
 
 namespace UnifySDK.Event
 { 
@@ -10,15 +8,21 @@ namespace UnifySDK.Event
         Type GetEventType();
         
         event EventHandler Handler;
+        void Handle(object t);
     }
     public class AEvent<T> : IEvent where T : struct
     {
         public event EventHandler Handler;
-
+        public delegate void AEventHandler(T eventData);
         private List<EventHandler> _onceList = new List<EventHandler>();
         public void ClearEventHandler()
         {
             Handler = null;
+        }
+
+        public void AddHandler(AEventHandler action)
+        {
+            Handler+=(d,e)=> action((T)d);
         }
 
         public void AddOnceHandler(Action<T, EventArgs> action)
@@ -33,22 +37,17 @@ namespace UnifySDK.Event
             return typeof (T);
         }
 
-        protected void Run(T t)
-        {
-            UDebug.Sys.Log($"  EventSystem Run  Handler==null {(Handler==null).ToString()}");
-            Handler?.Invoke(t,EventArgs.Empty);
-            foreach (var v in _onceList)
-            {
-                Handler -= v;
-            }
-            _onceList.Clear();
-        }
-
-        public void Handle(T t)
+        public void Handle(object t)
         {
             try
             {
-                Run(t);
+                //UDebug.Sys.Log($"  EventSystem Run  Handler==null {(Handler==null).ToString()}");
+                Handler?.Invoke(t,EventArgs.Empty);
+                foreach (var v in _onceList)
+                {
+                    Handler -= v;
+                }
+                _onceList.Clear();
             }
             catch (Exception e)
             {

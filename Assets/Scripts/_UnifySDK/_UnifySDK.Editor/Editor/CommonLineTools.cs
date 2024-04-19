@@ -18,7 +18,8 @@ public static class CommonLineTools
 	{
 		var py = "../Tools/UnifySDKTool/UnifySDKTool.py";
 		var model = PlayerPrefs.GetString(EnvironmentVariableSettingsEditor.LocalUnifySDKRecord, "None");
-		CommandLineUtils.RunDirectly("Python 3", $"{py} {model}", Application.dataPath);
+		//CommandLineUtils.RunDirectly("Python 3", $"{py} {model}", Application.dataPath);
+		CommandLineUtils.RunDirectly("Python", $"{py} {model}", Application.dataPath);
 	}
 }
 

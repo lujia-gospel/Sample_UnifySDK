@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
@@ -7,67 +8,57 @@ namespace UnifySDK.Event
 {
     public class UnifySDKEventSystem
     {
-        
         private static UnifySDKEventSystem instance;
+        public static UnifySDKEventSystem Instance => instance ??= new UnifySDKEventSystem();
 
-        public static UnifySDKEventSystem Instance
-        {
-            get
-            {
-                if (instance == null)
-                {
-                    instance = new UnifySDKEventSystem();
-                }
+        private readonly Dictionary<UnifySDKType, Dictionary<Type, IEvent>> allEvents = new();
 
-                return instance;
-            }
-        }
-        private readonly Dictionary<Type, List<object>> allEvents = new Dictionary<Type, List<object>>();
-        public void UnifySDKInitEvent(object unifySDK)
+        public void UnifySDKInitEvent(UnifySDKType sdkType, object unifySDK)
         {
             var type = unifySDK.GetType();
             var interfaceTypes = type.GetInterfaces();
+            var eventDictionary = new Dictionary<Type, IEvent>();
+            allEvents[sdkType] = eventDictionary;
+
             foreach (var interfaceType in interfaceTypes)
             {
-                PropertyInfo[] propertyInfos = interfaceType.GetProperties();
+                var propertyInfos = interfaceType.GetProperties();
                 foreach (var property in propertyInfos)
                 {
-                    var attrs = property.GetCustomAttributes(true);
-                    foreach (var attr in attrs)
-                    {
-                        if (attr is UnifySDKEventAttribute)
-                        {
-                            Type genericType = (attr as UnifySDKEventAttribute).GetType();
-                            object obj = Activator.CreateInstance(genericType);
-                            IEvent iEvent =  obj as IEvent;
-                            property.SetValue(unifySDK,obj);
-                            if (allEvents.ContainsKey(iEvent.GetEventType()))
-                                allEvents[iEvent.GetEventType()].Add(iEvent);
-                            else
-                                allEvents.Add(iEvent.GetEventType(),new List<object>(){iEvent});
-                            break;
-                        }
-                    }
+                    InitializeEventForProperty(unifySDK, property, eventDictionary);
                 }
             }
         }
-        public void Publish<T>(T a) where T : struct
+
+        private void InitializeEventForProperty(object unifySDK, PropertyInfo property, Dictionary<Type, IEvent> eventDictionary)
         {
-            List<object> iEvents;
-            if (!this.allEvents.TryGetValue(a.GetType(), out iEvents))
+            var attrs = property.GetCustomAttributes(typeof(UnifySDKEventAttribute), true);
+            foreach (UnifySDKEventAttribute attr in attrs)
             {
-                return;
-            }
-            
-            for (int i = 0; i < iEvents.Count; ++i)
-            {
-                object obj = iEvents[i];
-                if (!(obj is AEvent<T> aEvent))
+                if (Activator.CreateInstance(attr.GetType()) is IEvent iEvent)
                 {
-                    UDebug.Sys.LogError($"UnifySDKEventSystem Publish event error: {typeof(T).Name}");
-                    continue;
+                    property.SetValue(unifySDK, iEvent);
+                    eventDictionary[iEvent.GetEventType()] = iEvent;
                 }
-                aEvent.Handle(a);
+                else
+                {
+                    UDebug.Sys.LogError($"{attr.GetType().Name} 必须是继承自 IEvent");
+                }
+            }
+        }
+
+        public void Publish(object a, UnifySDKType type = UnifySDKType.All)
+        {
+            var eventType = a.GetType();
+            foreach (var kv in allEvents)
+            {
+                if (type == UnifySDKType.All || (kv.Key & type) == kv.Key)
+                {
+                    if (kv.Value.TryGetValue(eventType, out var iEvent))
+                    {
+                        iEvent.Handle(a);
+                    }
+                }
             }
         }
     }
